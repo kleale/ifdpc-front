@@ -1,10 +1,10 @@
-import { Text } from '@consta/uikit/Text';
-import { ThemeToggler } from '@consta/uikit/ThemeToggler';
-import { withTooltip } from '@consta/uikit/withTooltip';
-import { observer } from 'mobx-react-lite';
-import { getItemIcon } from './helpers';
-import { setTheme, themeItems, themeStore } from './store';
-import type { ThemeItem } from './types';
+import { Text } from "@consta/uikit/Text";
+import { ThemeToggler } from "@consta/uikit/ThemeToggler";
+import { withTooltip } from "@consta/uikit/withTooltip";
+import { observer } from "mobx-react-lite";
+import { getItemIcon } from "./helpers";
+import { setTheme, themeItems, themeStore } from "./store";
+import type { ThemeItem } from "./types";
 
 const ToggleThemeButton = observer(({ ...props }) => {
   const ThemeTogglerWithTooltip = withTooltip({

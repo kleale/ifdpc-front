@@ -12,23 +12,36 @@ import "./globalStyles.css";
 import "./transitions/index.css";
 import { FullscreenContainer } from "shared/ui/FullscreenContainer";
 
-export const App = observer(() => {
-	const { isLoading, isSuccess, isError, error } = useQuery({
-		queryKey: ["configureApp"],
-		queryFn: configureApp,
-	});
+import { AppProvider } from './contexts/AppContext';
+import ChatBot from './components/ChatBot/ChatBot';
+import MainApp from './components/MainApp/MainApp';
 
-	return (
-		<Theme preset={getTheme(themeStore.theme)} className={cnMixScrollBar()}>
-			<FullscreenContainer>
-				{isLoading && <Loader />}
-				{isError && <Responses500 title={error.message} actions={[]} size="m" />}
-				{isSuccess && (
-					<BrowserRouter>
-						<AppRoutes />
-					</BrowserRouter>
-				)}
-			</FullscreenContainer>
-		</Theme>
-	);
+export const App = observer(() => {
+  const { isLoading, isSuccess, isError, error } = useQuery({
+    queryKey: ["configureApp"],
+    queryFn: configureApp,
+  });
+
+  return (
+    <Theme preset={getTheme(themeStore.theme)} className={cnMixScrollBar()}>
+      <FullscreenContainer>
+        {isLoading && <Loader />}
+        {isError && (
+          <Responses500 title={error.message} actions={[]} size="m" />
+        )}
+        {isSuccess && (
+          <BrowserRouter>
+            {/* <AppRoutes /> */}
+
+            <AppProvider>
+              <div className="App">
+                <MainApp />
+                <ChatBot />
+              </div>
+            </AppProvider>
+          </BrowserRouter>
+        )}
+      </FullscreenContainer>
+    </Theme>
+  );
 });
