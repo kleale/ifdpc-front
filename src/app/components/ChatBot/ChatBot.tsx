@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect, FormEvent } from 'react';
 import { useContextSuggestions } from '../../hooks/useContextSuggestions';
+import { useDeepSeek } from '../../hooks/useDeepSeek';
 import ChatMessage from './ChatMessage';
-import { Message, QuickAction } from '../../types';
+import { Message, QuickAction, DeepSeekMessage } from '../../types';
 import './styles.css';
 
 const ChatBot: React.FC = () => {
@@ -9,13 +10,14 @@ const ChatBot: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
-      text: 'Здравствуйте! Я ваш контекстный помощник. Подскажу, какие действия доступны в текущем разделе.',
+      text: 'Здравствуйте! Я ваш AI-помощник на базе DeepSeek. Готов помочь с работой в приложении!',
       isBot: true,
       timestamp: new Date()
     }
   ]);
   const [inputValue, setInputValue] = useState<string>('');
-  const suggestions = useContextSuggestions();
+  const { suggestions, isLoading } = useContextSuggestions();
+  const { generateResponse, isGenerating, error } = useDeepSeek();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = (): void => {
@@ -28,11 +30,11 @@ const ChatBot: React.FC = () => {
 
   // Автоматически добавляем контекстные подсказки при изменении контекста
   useEffect(() => {
-    if (isOpen && suggestions.length > 0) {
+    if (isOpen && suggestions.length > 0 && !isLoading) {
       const lastMessage = messages[messages.length - 1];
       
       // Добавляем подсказку только если предыдущее сообщение не было подсказкой
-      if (!lastMessage.isSuggestion) {
+      if (!lastMessage.isSuggestion && !lastMessage.isBot) {
         const suggestionMessage: Message = {
           id: Date.now(),
           text: `💡 ${suggestions[0]}`,
@@ -43,29 +45,25 @@ const ChatBot: React.FC = () => {
         setMessages(prev => [...prev, suggestionMessage]);
       }
     }
-  }, [suggestions, isOpen, messages]);
+  }, [suggestions, isOpen, messages, isLoading]);
 
-  const getBotResponse = (userInput: string): string => {
-    const input = userInput.toLowerCase();
-    
-    if (input.includes('помощь') || input.includes('help')) {
-      return `Конечно! Сейчас вы находитесь в разделе, где можете: ${suggestions.join(' ')}`;
+  // Обработка ошибок API
+  useEffect(() => {
+    if (error) {
+      const errorMessage: Message = {
+        id: Date.now(),
+        text: 'Извините, произошла ошибка при подключении к AI. Пожалуйста, попробуйте позже.',
+        isBot: true,
+        isError: true,
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, errorMessage]);
     }
-    
-    if (input.includes('что делать') || input.includes('что можно')) {
-      return `На основе текущего контекста рекомендую: ${suggestions[0] || 'исследовать доступные функции'}`;
-    }
-    
-    if (input.includes('настройки') || input.includes('settings')) {
-      return 'Перейдите в раздел настроек для управления параметрами системы. Там вы можете настроить уведомления, безопасность и внешний вид.';
-    }
-    
-    return `Понял ваш вопрос! ${suggestions.length > 0 ? `Сейчас самое время: ${suggestions[0]}` : 'Продолжайте работу, я здесь чтобы помочь.'}`;
-  };
+  }, [error]);
 
-  const handleSendMessage = (e: FormEvent<HTMLFormElement>): void => {
+  const handleSendMessage = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-    if (!inputValue.trim()) return;
+    if (!inputValue.trim() || isGenerating) return;
 
     // Добавляем сообщение пользователя
     const userMessage: Message = {
@@ -78,20 +76,57 @@ const ChatBot: React.FC = () => {
     setMessages(prev => [...prev, userMessage]);
     setInputValue('');
 
-    // Имитируем задержку ответа
-    setTimeout(() => {
-      const botMessage: Message = {
-        id: Date.now() + 1,
-        text: getBotResponse(inputValue),
-        isBot: true,
-        timestamp: new Date()
-      };
+    // Показываем индикатор загрузки
+    const loadingMessage: Message = {
+      id: Date.now() + 1,
+      text: 'Думаю...',
+      isBot: true,
+      timestamp: new Date()
+    };
+    setMessages(prev => [...prev, loadingMessage]);
 
-      setMessages(prev => [...prev, botMessage]);
-    }, 1000);
+    try {
+      // Подготавливаем историю сообщений для DeepSeek
+      const deepSeekMessages: DeepSeekMessage[] = messages
+        .filter(msg => !msg.isSuggestion && !msg.isError)
+        .map(msg => ({
+          role: msg.isBot ? 'assistant' : 'user',
+          content: msg.text
+        }));
+
+      // Добавляем текущее сообщение пользователя
+      deepSeekMessages.push({
+        role: 'user',
+        content: inputValue
+      });
+
+      // Получаем ответ от DeepSeek
+      const aiResponse = await generateResponse(deepSeekMessages);
+
+      // Убираем сообщение "Думаю..." и добавляем ответ
+      setMessages(prev => 
+        prev.filter(msg => msg.id !== loadingMessage.id).concat({
+          id: Date.now() + 2,
+          text: aiResponse,
+          isBot: true,
+          timestamp: new Date()
+        })
+      );
+    } catch (err) {
+      // Убираем сообщение "Думаю..." и показываем ошибку
+      setMessages(prev => 
+        prev.filter(msg => msg.id !== loadingMessage.id).concat({
+          id: Date.now() + 2,
+          text: 'Извините, не удалось получить ответ. Пожалуйста, попробуйте еще раз.',
+          isBot: true,
+          isError: true,
+          timestamp: new Date()
+        })
+      );
+    }
   };
 
-  const handleQuickAction = (action: QuickAction): void => {
+  const handleQuickAction = async (action: QuickAction): Promise<void> => {
     const actionMessage: Message = {
       id: Date.now(),
       text: action,
@@ -101,23 +136,60 @@ const ChatBot: React.FC = () => {
 
     setMessages(prev => [...prev, actionMessage]);
 
-    setTimeout(() => {
-      const responses: Record<QuickAction, string> = {
-        'Помощь': `Чем могу помочь? Сейчас доступны действия: ${suggestions.slice(0, 2).join(', ')}`,
-        'Что делать?': `Рекомендую: ${suggestions[0] || 'ознакомиться с возможностями системы'}`,
-        'Сохранить': 'Изменения сохранены. Продолжайте работу!',
-        'Отмена': 'Действие отменено. Что бы вы хотели сделать вместо этого?'
-      };
-      
-      const botMessage: Message = {
-        id: Date.now() + 1,
-        text: responses[action],
-        isBot: true,
-        timestamp: new Date()
-      };
-      
-      setMessages(prev => [...prev, botMessage]);
-    }, 800);
+    // Показываем индикатор загрузки
+    const loadingMessage: Message = {
+      id: Date.now() + 1,
+      text: 'Думаю...',
+      isBot: true,
+      timestamp: new Date()
+    };
+    setMessages(prev => [...prev, loadingMessage]);
+
+    try {
+      let prompt = '';
+      switch (action) {
+        case 'Помощь':
+          prompt = 'Помоги мне разобраться с текущим разделом приложения. Какие основные функции доступны?';
+          break;
+        case 'Что делать?':
+          prompt = 'Что мне сделать сейчас в этом разделе? Дай конкретные рекомендации.';
+          break;
+        case 'Сохранить':
+          prompt = 'Как правильно сохранить изменения в приложении?';
+          break;
+        case 'Отмена':
+          prompt = 'Как отменить текущее действие?';
+          break;
+      }
+
+      const deepSeekMessages: DeepSeekMessage[] = [
+        {
+          role: 'user',
+          content: prompt
+        }
+      ];
+
+      const aiResponse = await generateResponse(deepSeekMessages);
+
+      setMessages(prev => 
+        prev.filter(msg => msg.id !== loadingMessage.id).concat({
+          id: Date.now() + 2,
+          text: aiResponse,
+          isBot: true,
+          timestamp: new Date()
+        })
+      );
+    } catch (err) {
+      setMessages(prev => 
+        prev.filter(msg => msg.id !== loadingMessage.id).concat({
+          id: Date.now() + 2,
+          text: 'Не удалось обработать запрос. Попробуйте еще раз.',
+          isBot: true,
+          isError: true,
+          timestamp: new Date()
+        })
+      );
+    }
   };
 
   return (
@@ -127,10 +199,10 @@ const ChatBot: React.FC = () => {
         <button 
           className="chat-bot-floating-btn"
           onClick={() => setIsOpen(true)}
-          title="Открыть помощника"
+          title="Открыть AI-помощника"
           type="button"
         >
-          <span className="bot-icon">💬</span>
+          <span className="bot-icon">🤖</span>
           <span className="notification-dot"></span>
         </button>
       )}
@@ -140,10 +212,12 @@ const ChatBot: React.FC = () => {
         <div className="chat-bot-container">
           <div className="chat-bot-header">
             <div className="bot-info">
-              <span className="bot-avatar">🤖</span>
+              <span className="bot-avatar">AI</span>
               <div>
-                <h3>Контекстный помощник</h3>
-                <span className="status">В сети</span>
+                <h3>DeepSeek Помощник</h3>
+                <span className="status">
+                  {isGenerating ? 'Печатает...' : 'В сети'}
+                </span>
               </div>
             </div>
             <button 
@@ -164,6 +238,7 @@ const ChatBot: React.FC = () => {
                 isBot={message.isBot}
                 timestamp={message.timestamp}
                 isSuggestion={message.isSuggestion}
+                isError={message.isError}
               />
             ))}
             <div ref={messagesEndRef} />
@@ -174,18 +249,21 @@ const ChatBot: React.FC = () => {
             <button 
               onClick={() => handleQuickAction('Помощь')}
               type="button"
+              disabled={isGenerating}
             >
               Помощь
             </button>
             <button 
               onClick={() => handleQuickAction('Что делать?')}
               type="button"
+              disabled={isGenerating}
             >
               Что делать?
             </button>
             <button 
               onClick={() => handleQuickAction('Сохранить')}
               type="button"
+              disabled={isGenerating}
             >
               Сохранить
             </button>
@@ -197,15 +275,16 @@ const ChatBot: React.FC = () => {
               type="text"
               value={inputValue}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value)}
-              placeholder="Введите ваш вопрос..."
+              placeholder={isGenerating ? "AI генерирует ответ..." : "Задайте вопрос AI..."}
               className="chat-input"
+              disabled={isGenerating}
             />
             <button 
               type="submit" 
               className="send-btn"
-              disabled={!inputValue.trim()}
+              disabled={!inputValue.trim() || isGenerating}
             >
-              →
+              {isGenerating ? '⏳' : '→'}
             </button>
           </form>
         </div>

@@ -6,7 +6,7 @@ const CSP_HOSTS =
 
 const HEADERS = {
   'cache-control': 's-maxage=360000, public',
-  'content-security-policy': `default-src 'self' ${CSP_HOSTS}; script-src 'self' 'unsafe-inline' 'unsafe-eval' ${CSP_HOSTS}; script-src-elem 'self' 'unsafe-inline' ${CSP_HOSTS}; style-src 'self' 'unsafe-inline' ${CSP_HOSTS}; img-src 'self' data: ${CSP_HOSTS}; font-src 'self' data: ${CSP_HOSTS}; connect-src 'self' ws: ${CSP_HOSTS}; form-action 'self' ${CSP_HOSTS};`,
+  //'content-security-policy': `default-src 'self' ${CSP_HOSTS}; script-src 'self' 'unsafe-inline' 'unsafe-eval' ${CSP_HOSTS}; script-src-elem 'self' 'unsafe-inline' ${CSP_HOSTS}; style-src 'self' 'unsafe-inline' ${CSP_HOSTS}; img-src 'self' data: ${CSP_HOSTS}; font-src 'self' data: ${CSP_HOSTS}; connect-src 'self' ws: ${CSP_HOSTS}; form-action 'self' ${CSP_HOSTS};`,
   'cross-origin-embedder-policy': 'unsafe-none',
   'cross-origin-opener-policy': 'same-origin',
   'origin-agent-cluster': '?1',

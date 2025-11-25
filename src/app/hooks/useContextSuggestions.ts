@@ -1,83 +1,111 @@
 import { useState, useEffect } from 'react';
 import { useAppContext } from '../contexts/AppContext';
+import { useDeepSeek } from './useDeepSeek';
 
-export const useContextSuggestions = (): string[] => {
+export const useContextSuggestions = (): { suggestions: string[]; isLoading: boolean } => {
   const { currentPage, selectedItem, isFormDirty, userData } = useAppContext();
+  const { generateSuggestion, isGenerating } = useDeepSeek();
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [aiSuggestion, setAiSuggestion] = useState<string>('');
 
   useEffect(() => {
-    const generateSuggestions = (): void => {
-      const newSuggestions: string[] = [];
+    const generateContextDescription = (): string => {
+      let context = `Пользователь находится на странице: ${currentPage}. `;
 
-      // Подсказки на основе текущей страницы
       switch (currentPage) {
         case 'home':
-          newSuggestions.push(
-            'Вы можете создать новый проект или просмотреть существующие',
-            'Попробуйте использовать поиск для быстрого доступа',
-            'Не забудьте заполнить профиль для персонализированных рекомендаций'
-          );
+          context += 'Это главная страница приложения. ';
           break;
-
         case 'projects':
-          if (selectedItem) {
-            newSuggestions.push(
-              `Вы работаете с проектом "${selectedItem}". Вы можете его редактировать или поделиться`,
-              'Попробуйте добавить участников в проект для совместной работы',
-              'Не забудьте сохранить изменения перед выходом'
-            );
-          } else {
-            newSuggestions.push(
-              'Выберите проект для просмотра деталей',
-              'Создайте новый проект, нажав кнопку "Добавить"',
-              'Используйте фильтры для сортировки проектов'
-            );
-          }
+          context += selectedItem 
+            ? `Работает с проектом: "${selectedItem}". `
+            : 'Просматривает список проектов. ';
           break;
-
         case 'profile':
-          newSuggestions.push(
-            'Обновите информацию о себе для лучших рекомендаций',
-            'Проверьте настройки уведомлений',
-            'Добавьте аватар для персонализации аккаунта'
-          );
+          context += 'Находится в профиле пользователя. ';
           break;
-
         case 'settings':
-          newSuggestions.push(
-            'Настройте параметры безопасности',
-            'Проверьте подключенные сервисы',
-            'Экспортируйте данные для резервной копии'
-          );
+          context += 'В разделе настроек приложения. ';
           break;
-
-        default:
-          newSuggestions.push(
-            'Исследуйте доступные разделы приложения',
-            'Используйте помощь ассистента при возникновении вопросов'
-          );
       }
 
-      // Контекстные подсказки на основе состояния формы
       if (isFormDirty) {
-        newSuggestions.push('У вас есть несохраненные изменения. Не забудьте сохранить!');
+        context += 'Есть несохраненные изменения. ';
       }
 
-      // Подсказки на основе данных пользователя
       if (!userData.email) {
-        newSuggestions.push('Добавьте email для восстановления доступа к аккаунту');
+        context += 'Email пользователя не заполнен. ';
       }
 
       if (!userData.phone) {
-        newSuggestions.push('Укажите телефон для дополнительной безопасности');
+        context += 'Телефон пользователя не заполнен. ';
       }
 
-      // Уникализируем подсказки
-      setSuggestions(Array.from(new Set(newSuggestions)));
+      return context;
     };
 
-    generateSuggestions();
-  }, [currentPage, selectedItem, isFormDirty, userData]);
+    const getAISuggestion = async (): Promise<void> => {
+      try {
+        const context = generateContextDescription();
+        const suggestion = await generateSuggestion(context);
+        setAiSuggestion(suggestion);
+      } catch (error) {
+        console.error('Failed to generate AI suggestion:', error);
+        setAiSuggestion('');
+      }
+    };
 
-  return suggestions;
+    // Генерируем базовые подсказки
+    const baseSuggestions: string[] = [];
+    
+    switch (currentPage) {
+      case 'home':
+        baseSuggestions.push(
+          'Создайте новый проект или просмотрите существующие',
+          'Используйте поиск для быстрого доступа к функциям'
+        );
+        break;
+      case 'projects':
+        if (selectedItem) {
+          baseSuggestions.push(
+            `Редактируйте проект "${selectedItem}"`,
+            'Добавьте участников для совместной работы'
+          );
+        } else {
+          baseSuggestions.push(
+            'Выберите проект для детального просмотра',
+            'Создайте новый проект'
+          );
+        }
+        break;
+      case 'profile':
+        baseSuggestions.push(
+          'Обновите личную информацию',
+          'Проверьте настройки уведомлений'
+        );
+        break;
+      case 'settings':
+        baseSuggestions.push(
+          'Настройте параметры безопасности',
+          'Проверьте подключенные интеграции'
+        );
+        break;
+    }
+
+    if (isFormDirty) {
+      baseSuggestions.push('Сохраните несохраненные изменения');
+    }
+
+    // Добавляем AI-подсказку если она есть
+    const allSuggestions = aiSuggestion 
+      ? [aiSuggestion, ...baseSuggestions] 
+      : baseSuggestions;
+
+    setSuggestions(Array.from(new Set(allSuggestions)));
+
+    // Запрашиваем AI-подсказку при изменении контекста
+    getAISuggestion();
+  }, [currentPage, selectedItem, isFormDirty, userData, generateSuggestion]);
+
+  return { suggestions, isLoading: isGenerating };
 };

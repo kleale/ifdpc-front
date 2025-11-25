@@ -4,6 +4,7 @@ export interface Message {
   isBot: boolean;
   timestamp: Date;
   isSuggestion?: boolean;
+  isError?: boolean;
 }
 
 export interface UserData {
@@ -25,3 +26,6 @@ export interface AppContextType {
 }
 
 export type QuickAction = 'Помощь' | 'Что делать?' | 'Сохранить' | 'Отмена';
+
+// // DeepSeek типы
+export type { DeepSeekMessage } from './deepseek';
