@@ -1,0 +1,15 @@
+{
+  "EXT_URLS": {
+    "PRODUCT_DOCS": "about:blank"
+  },
+  "APP": {
+    "VERSION": "0.0.1"
+  },
+  "SUPPORT": {
+    "MAIL": "support@ifdpc.ru",
+    "BODY": "Здравствуйте!",
+    "SUBJECT": "Помогите!",
+    "ESO_URL": "about:blank",
+    "PHONE_NUMBER": "+79991234567"
+  }
+}

@@ -1,0 +1,7 @@
+segments:
+  - id: devzone
+    REDOS_DOCKER_REGISTRY: redos-registry.repos.devzone.local
+    NPM_REGISTRY: https://proxy.repos.devzone.local/repository/npm-all
+    NGINX_BASE_IMAGE: ubi8/nginx:latest
+    NODEJS_BASE_IMAGE: ubi8/nodejs-20:latest
+    LANDSCAPE: devzone

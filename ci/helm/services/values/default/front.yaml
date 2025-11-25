@@ -1,0 +1,48 @@
+# Параметры, передаввемые через set в Jenkinsfile
+namespace:
+registry:
+appVersion:
+# -----------------------------------------------
+# Порт исользуется из параметров Deployment (containerPort)
+service: true
+# Deployment
+deployment:
+  spec:
+    replicas: 1
+    strategy:
+      type: Recreate
+template:
+  spec:
+    dnsPolicy: ClusterFirst
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    terminationGracePeriodSeconds: 30
+    containers:
+      name: front
+      imagePullPolicy: Always
+      ports:
+        - name: http-front
+          containerPort: 8080
+          protocol: TCP
+      livenessProbe:
+        initialDelaySeconds: 30
+        periodSeconds: 30
+        timeoutSeconds: 10
+        httpGet:
+          scheme: HTTP
+          path: /
+          port: 8080
+      readinessProbe:
+        initialDelaySeconds: 5
+        periodSeconds: 30
+        httpGet:
+          scheme: HTTP
+          path: /
+          port: 8080
+      resources:
+        requests:
+          cpu: 200m
+          memory: 500Mi
+        limits:
+          cpu: 500m
+          memory: 1000Mi

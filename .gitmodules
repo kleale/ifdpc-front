@@ -1,0 +1,3 @@
+[submodule "ci/devzone-tools"]
+	path = ci/devzone-tools
+	url = git@git.devzone.local:devzone/NonProgram/u200004862/inner-source/devzone-tools.git

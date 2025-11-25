@@ -1,0 +1,29 @@
+.modal {
+  width: 100%;
+  max-width: 448px;
+}
+
+.header {
+  display: flex;
+  gap: var(--space-s);
+  align-items: center;
+}
+
+.content {
+  height: 100%;
+  display: flex;
+  gap: var(--space-s);
+  flex-direction: column;
+}
+
+.copy {
+  visibility: hidden;
+}
+
+.button {
+  padding-right: 0;
+}
+
+.button:hover .copy {
+  visibility: visible;
+}

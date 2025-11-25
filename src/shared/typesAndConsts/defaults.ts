@@ -1,0 +1,1 @@
+export const DEFAULT_ANIMATION_TIMEOUT = 300;

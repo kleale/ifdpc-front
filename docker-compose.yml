@@ -1,0 +1,38 @@
+services:
+#   front-debug:
+#     restart: always
+#     build:
+#       context: .
+#       dockerfile: ./docker/DockerfileLocalDebug
+#     ports:
+#       - "3000:3000"
+#     volumes:
+#       - ./src/:/opt/app-root/src/
+#    deploy:
+#      mode: replicated
+#      replicas: 1
+#      resources:
+#        reservations:
+#          cpus: '0.5'
+#          memory: 100M
+#        limits:
+#          cpus: '1'
+#          memory: 512M
+
+  front:
+    restart: always
+    build:
+      context: .
+      dockerfile: ./docker/DockerfileLocal
+    ports:
+      - "3000:8080"
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        reservations:
+          cpus: '0.5'
+          memory: 100M
+        limits:
+          cpus: '1'
+          memory: 512M

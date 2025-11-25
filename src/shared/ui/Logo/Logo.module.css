@@ -1,0 +1,23 @@
+.link {
+  text-decoration: none;
+  color: var(--color-typo-primary);
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-xs);
+}
+
+.link_disabled {
+  pointer-events: none;
+}
+
+.logoMain {
+  font-weight: 700;
+  font-size: var(--size-text-xl);
+}
+
+.logoVersion {
+  font-weight: 400;
+  font-size: var(--size-text-xs);
+  color: var(--color-typo-secondary);
+  opacity: 0.8;
+}

@@ -1,0 +1,341 @@
+# Параметры, передаввемые через set в Jenkinsfile
+namespace:
+appVersion:
+# -----------------------------------------------
+configMap:
+  name: front
+  data:
+    nginx.conf: |-
+      worker_processes 4;
+      error_log /dev/stderr error;
+      pid /var/run/nginx/nginx.pid;
+      #user 1001;
+
+      events {
+          worker_connections 1024;
+      }
+
+      http {
+          error_page 400 401 403 404 405 408 411 413 414 500 502 503 504  @fallback;
+
+          dav_methods off;
+          gzip        off;
+          gzip_static off;
+          autoindex   off;
+          server_tokens off;
+
+          map $status $success {
+              ~^4.* false;
+              ~^5.* false;
+              default true;
+          }
+
+          map $http_x_correlation_id $correlation_id {
+              # Если заголовок передан, используем его значение
+              ~.     $http_x_correlation_id;
+              # Если заголовка нет, используем сгенерированный request_id
+              default $request_id;
+          }
+
+          log_format default '$remote_addr - $remote_user [$time_local] "$request" '
+                              '$status $body_bytes_sent "$http_referer" '
+                              '"$http_user_agent" "$http_x_forwarded_for"';
+          
+          log_format cef_custom 'CEF:0|pwc|ifdpai-front|1.0.0|-|REQUEST|3|'
+                              'src=$remote_addr|dst="$request"|-|-|user=$remote_user|'
+                              'msg="status":"$status","body_bytes_sent":"$body_bytes_sent","request_time":"$request_time",'
+                              '"http_referrer":"$http_referer","http_user_agent":"$http_user_agent"|$msec| ';
+
+          log_format json_custom '{"id": "$correlation_id",'
+                                '"audit_date_time": "$time_local",'
+                                '"user_id": "$remote_user",'
+                                '"msg": "$request_method $request_uri",'
+                                '"level": "INFO",'
+                                '"source_address": "$remote_addr",'
+                                '"destination_address": "$remote_addr",'
+                                '"http_method": "$request_method",'
+                                '"endpoint": "$request_uri",'
+                                '"success": "$success",'
+                                '"status_code": "$status",'
+                                '"request_body": "$request_body",'
+                                '"json_valid": true}';
+          log_format platform_json '{"user_id":"$remote_user",'
+                                '"role":null,'
+                                '"role_AD":null,'
+                                '"company":"GPNDS",'
+                                '"project_name":"ifdpai",'
+                                '"file_name":null,'
+                                '"project_id":"s240002222",'
+                                '"msg":"$request_method $request_uri",'
+                                '"details":"status=$status,bytes=$body_bytes_sent,request_time=$request_time,referrer=$http_referer,ua=$http_user_agent",'
+                                '"session_id":null,'
+                                '"level":"INFO",'
+                                '"traceback":null,'
+                                '"http_method":"$request_method",'
+                                '"endpoint":"$request_uri",'
+                                '"status_code":"$status",'
+                                '"request_body":"$request_body",'
+                                '"response_body":null,'
+                                '"corellationID":"$correlation_id",'
+                                '"json_valid":true}';
+          access_log /dev/stdout default;
+          access_log /dev/stdout cef_custom;
+          access_log /dev/stdout json_custom;
+          access_log /dev/stdout platform_json;
+          error_log /dev/stderr info;
+          
+          sendfile            on;
+          tcp_nopush          on;
+          tcp_nodelay         on;
+
+          types_hash_max_size 4096;
+
+          client_max_body_size 100K;
+          client_body_buffer_size 100K;
+          client_body_timeout 10;
+          client_header_buffer_size 100k;
+          client_header_timeout 10;
+          large_client_header_buffers 4 8k;
+          keepalive_timeout 5;
+          send_timeout 5;
+
+          ssl_ciphers "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH";
+          ssl_prefer_server_ciphers on;
+          ssl_protocols TLSv1.2 TLSv1.3;
+          ssl_session_tickets off;
+          ssl_session_timeout 5m;
+          ssl_session_cache shared:SSL:2m;
+          ssl_stapling on;
+
+          limit_conn_zone $binary_remote_addr zone=perip:50m;
+          limit_req_zone $binary_remote_addr zone=ifdpai-front:50m rate=50r/s;
+
+          default_type application/octet-stream;
+          types {
+                  text/html                                        html;
+                  text/css                                         css;
+                  image/gif                                        gif;
+                  image/jpeg                                       jpeg jpg;
+                  application/javascript                           js;
+                  text/plain                                       txt;
+                  image/png                                        png;
+                  image/svg+xml                                    svg svgz;
+                  image/webp                                       webp;
+                  font/woff                                        woff;
+                  font/woff2                                       woff2;
+                  application/json                                 json;
+          }
+
+          server {
+              server_name front;
+              server_name  ifdpc.apps.dhd-vkc02.devzone.local;
+
+              listen        8080;
+
+              http2 on;
+
+              # ssl_certificate         /etc/pki/tls/certs/client.crt;
+              # ssl_certificate_key     /etc/pki/tls/certs/client.key;
+              # # должен быть выключены уязвимые версии протоколов ssl, tls и включена новейшая безопасна¤ версия
+              # ssl_protocols           TLSv1.2 TLSv1.3;
+              # # должны использоваться перечисленные типы шифрования и включен параметр ssl_prefer_server_ciphers on'
+              # ssl_ciphers             "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH";
+              # ssl_prefer_server_ciphers on;
+              # ssl_session_tickets     off;
+              # ssl_session_timeout     5m;
+              # ssl_session_cache       shared:SSL:2m;
+              # ssl_stapling            on;
+
+              limit_conn perip 10;
+              limit_req zone=ifdpai-front burst=15;
+
+              root /opt/app-root/src;
+              index index.html index.htm;
+              
+              add_header cache-control "s-maxage=360000, public";
+              add_header content-security-policy "default-src 'self' https://ifdpc.apps.dhd-vkc02.devzone.local https://ifdpc-keycloak.apps.dhd-vkc02.devzone.local https://ifdpc-api.apps.dhd-vkc02.devzone.local https://spa-back.gazprom-neft.local; script-src 'self' 'unsafe-inline' https://ifdpc.apps.dhd-vkc02.devzone.local https://ifdpc-keycloak.apps.dhd-vkc02.devzone.local https://ifdpc-api.apps.dhd-vkc02.devzone.local https://spa-back.gazprom-neft.local; script-src-elem 'self' 'unsafe-inline' https://ifdpc.apps.dhd-vkc02.devzone.local https://ifdpc-keycloak.apps.dhd-vkc02.devzone.local https://ifdpc-api.apps.dhd-vkc02.devzone.local https://spa-back.gazprom-neft.local; style-src 'self' 'unsafe-inline' https://ifdpc.apps.dhd-vkc02.devzone.local https://ifdpc-keycloak.apps.dhd-vkc02.devzone.local https://ifdpc-api.apps.dhd-vkc02.devzone.local https://spa-back.gazprom-neft.local; img-src 'self' data: https://ifdpc.apps.dhd-vkc02.devzone.local https://ifdpc-keycloak.apps.dhd-vkc02.devzone.local https://ifdpc-api.apps.dhd-vkc02.devzone.local https://spa-back.gazprom-neft.local; font-src 'self' data: https://ifdpc.apps.dhd-vkc02.devzone.local https://ifdpc-keycloak.apps.dhd-vkc02.devzone.local https://ifdpc-api.apps.dhd-vkc02.devzone.local https://spa-back.gazprom-neft.local; connect-src 'self' ws: https://ifdpc.apps.dhd-vkc02.devzone.local https://ifdpc-keycloak.apps.dhd-vkc02.devzone.local https://ifdpc-api.apps.dhd-vkc02.devzone.local https://spa-back.gazprom-neft.local; form-action 'self' https://ifdpc.apps.dhd-vkc02.devzone.local https://ifdpc-keycloak.apps.dhd-vkc02.devzone.local https://ifdpc-api.apps.dhd-vkc02.devzone.local https://spa-back.gazprom-neft.local;" always;
+              add_header cross-origin-embedder-policy "unsafe-none";
+              add_header cross-origin-opener-policy "same-origin";
+              add_header origin-agent-cluster "?1";
+              add_header referrer-policy "no-referrer";
+              add_header strict-transport-security "max-age=15678000; includeSubDomains; preload";
+              add_header x-content-type-options "nosniff";
+              add_header x-dns-prefetch-control "on";
+              add_header x-download-options "noopen";
+              add_header x-frame-options "SAMEORIGIN";
+              add_header x-permitted-cross-domain-policies "none";
+              add_header x-xss-protection "1; mode=block";
+              add_header Public-Key-Pins 'pin-sha256="hash123"; max-age=5184000';
+              add_header X-Correlation-Id $correlation_id always;
+              add_header Access-Control-Expose-Headers "X-Correlation-Id" always;
+
+              proxy_hide_header X-Powered-By;
+              proxy_hide_header Server;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto $scheme;
+              proxy_set_header X-Correlation-Id $correlation_id;
+              
+              proxy_redirect off;
+              proxy_cache off;
+              proxy_cache_bypass true;
+              proxy_no_cache true;
+
+              location / {
+                  limit_except GET { deny  all; }
+
+                  try_files $uri $uri/ /index.html;
+
+                  sub_filter_last_modified off;
+                  sub_filter_once off;
+                  sub_filter_types text/html application/javascript text/javascript;
+              }
+
+              location @fallback {
+                  limit_except GET { deny  all; }
+
+                  try_files $uri $uri/ /index.html;
+
+                  sub_filter_last_modified off;
+                  sub_filter_once off;
+                  sub_filter_types text/html application/javascript text/javascript;
+              }
+
+              location ~ /\. {
+                  deny all;
+                  return 404;
+              }
+
+          }
+
+      }
+    app_config.json: |-
+      {
+        "GPN_COUNTER": {
+          "SPA_URL": "https://spa-back.gazprom-neft.local/events",
+          "SPA_SHARED_LIB": "https://spa-back.gazprom-neft.local/static/counter.js",
+          "COUNTER_ID": "123",
+          "API_VERSION": "1.0"
+        },
+        "API": {
+          "URL": "https://ifdpc-api.apps.dhd-vkc02.devzone.local/api/v1/",
+          "JWT_PREFIX": "Bearer "
+        },
+        "KEYCLOAK": {
+          "URL": "https://ifdpc-keycloak.apps.dhd-vkc02.devzone.local/",
+          "REALM": "ifdpc-realm",
+          "CLIENT_ID": "ifdpc-client"
+        },
+        "EXT_URLS": {
+          "PRODUCT_DOCS": "about:blank"
+        },
+        "APP": {
+          "VERSION": "0.0.1"
+        },
+        "SUPPORT": {
+          "MAIL": "support@ifdpc.ru",
+          "BODY": "Здравствуйте!",
+          "SUBJECT": "Помогите!",
+          "ESO_URL": "about:blank",
+          "PHONE_NUMBER": "+79991234567"
+        }
+      }
+template:
+  spec:
+    imagePullSecrets:
+      - name: project-registry-secret
+    containers:
+      securityContext:
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        seccompProfile:
+          type: RuntimeDefault
+      env:
+        - name: APP_NAME
+          value: front
+        - name: APP_VERSION
+          value: "0.0.1"
+        - name: APP_ENV
+          value: RELEASE
+        - name: APP_LOG_LEVEL
+          value: INFO
+      livenessProbe:
+        initialDelaySeconds: 30
+        periodSeconds: 30
+        timeoutSeconds: 10
+        httpGet:
+          scheme: HTTP
+          path: /
+          port: 8080
+      readinessProbe:
+        initialDelaySeconds: 30
+        periodSeconds: 30
+        httpGet:
+          scheme: HTTP
+          path: /
+          port: 8080
+      resources:
+        requests:
+          cpu: 1
+          memory: 1000Mi
+        limits:
+          cpu: 2
+          memory: 1500Mi
+volumes:
+  - name: tmp
+    mountPath: /tmp
+    withoutManifest: true
+    emptyDir:
+      sizeLimit: 500Mi
+    existingVolume: true
+  - name: nginx-log
+    mountPath: /var/log/nginx
+    withoutManifest: true
+    emptyDir:
+      sizeLimit: 500Mi
+    existingVolume: true
+  - name: nginx-run
+    mountPath: /var/run/nginx
+    withoutManifest: true
+    emptyDir:
+      sizeLimit: 500Mi
+    existingVolume: true
+  - name: nginx-tmp
+    mountPath: /var/lib/nginx/tmp
+    withoutManifest: true
+    emptyDir:
+      sizeLimit: 500Mi
+    existingVolume: true
+  - name: nginx-configmap
+    mountPath: /etc/nginx/nginx.conf
+    subPath: nginx.conf
+    withoutManifest: true
+    configMap:
+      name: front
+    existingVolume: true
+  - name: app-config
+    mountPath: /opt/app-root/src/app_config.json
+    subPath: app_config.json
+    withoutManifest: true
+    configMap:
+      name: front
+    existingVolume: true
+
+ingress:
+  encryptedBackend: false
+  maxBodySize: 10m
+  istioServiceUpstream: true
+  istioUpstreamVhost: front.ifdpai.svc
+  url:
+    urlPrefix: ifdpc
+    host: apps.dhd-vkc02.devzone.local
+  paths:
+    - path: / 
+      port: 8080
+      pathType: Prefix
+  # tls: 
+  #   secretName: gpn-ingress-tls

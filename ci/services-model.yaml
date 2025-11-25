@@ -1,0 +1,41 @@
+# Путь к файлу обязательно должен быть ./ci/devzone/services-ifdpai.yaml
+
+projectSettings:
+  - name: front
+    id: ifdpai
+    gitUrl: git@git.devzone.local:devzone/s240002222/ifdpai/ifdpc-front.git
+
+landscapes:
+  - name: devzone
+    segmentId: devzone
+    mainRegistry: ifdpai-registry.repos.devzone.local
+
+clusters:
+  - name: deckhouse-dz
+    landscape: devzone
+    cloudApiUrl: https://api.apps.dhd-vkc02.devzone.local
+    platform: k8s
+
+# стенды
+environments:
+  - name: devzone
+    cluster: deckhouse-dz #должно быть идентично clusters.name
+    cloudNamespace: ifdpai
+    appUrlOrSuffix: ifdpc.apps.dhd-vkc02.devzone.local
+
+services:
+    # =========== python
+    - name: front
+      path: src
+      type: front
+      image: front
+      dockerfile: docker/front.Dockerfile
+      buildJob: ../build/build-front
+      git: git@git.devzone.local:devzone/s240002222/ifdpai/ifdpc-front.git
+      buildContext: >
+        --build-arg REDOS_DOCKER_REGISTRY=$REDOS_DOCKER_REGISTRY
+        --build-arg NPM_REGISTRY=$NPM_REGISTRY
+        --build-arg NGINX_BASE_IMAGE=$NGINX_BASE_IMAGE
+        --build-arg LANDSCAPE=$LANDSCAPE
+        --build-arg NODEJS_BASE_IMAGE=$NODEJS_BASE_IMAGE
+        .
