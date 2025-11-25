@@ -13,7 +13,7 @@ import "./transitions/index.css";
 import { FullscreenContainer } from "shared/ui/FullscreenContainer";
 
 import { AppProvider } from './contexts/AppContext';
-import ChatBot from './components/ChatBot/ChatBot';
+import { ChatBot } from './components/ChatBot/ChatBot';
 import MainApp from './components/MainApp/MainApp';
 
 export const App = observer(() => {

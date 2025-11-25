@@ -1,3 +1,10 @@
+export interface MessageButton {
+  id: string;
+  text: string;
+  action?: string;
+  type?: 'primary' | 'secondary' | 'danger';
+}
+
 export interface Message {
   id: number;
   text: string;
@@ -5,6 +12,7 @@ export interface Message {
   timestamp: Date;
   isSuggestion?: boolean;
   isError?: boolean;
+  buttons?: MessageButton[];
 }
 
 export interface UserData {
@@ -25,7 +33,26 @@ export interface AppContextType {
   setIsFormDirty: (dirty: boolean) => void;
 }
 
-export type QuickAction = 'Помощь' | 'Что делать?' | 'Сохранить' | 'Отмена';
+export type QuickAction = 'help' | 'suggest' | 'save' | 'cancel';
 
-// // DeepSeek типы
-export type { DeepSeekMessage } from './deepseek';
+// Типы для ресайзинга
+export interface ChatBotPosition {
+  x: number;
+  y: number;
+}
+
+export interface ChatBotSize {
+  width: number;
+  height: number;
+}
+
+export interface ResizeState {
+  isResizing: boolean;
+  resizeDirection: 'n' | 's' | 'e' | 'w' | 'ne' | 'nw' | 'se' | 'sw' | null;
+  startX: number;
+  startY: number;
+  startWidth: number;
+  startHeight: number;
+  startLeft: number;
+  startTop: number;
+}
