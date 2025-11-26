@@ -11,18 +11,44 @@ import { Switch } from "@consta/uikit/Switch";
 import { IconMeatball } from "@consta/icons/IconMeatball";
 import { Button } from "@consta/uikit/Button";
 import { ContextMenu } from "@consta/uikit/ContextMenu";
-import { IconTrash } from "@consta/icons/IconTrash";
-import { IconStorage } from "@consta/icons/IconStorage";
-import { IconEdit } from "@consta/icons/IconEdit";
-import { IconDocAdd } from "@consta/icons/IconDocAdd";
-import { IconUpload } from "@consta/icons/IconUpload";
+import { IconShare } from "../../components/Icons/IconShare";
+
 import { IconHamburger } from "@consta/icons/IconHamburger";
+import { IconAdd } from "@consta/icons/IconAdd";
+import { FileField } from "@consta/uikit/FileField";
+import { File } from "@consta/uikit/File";
+import { IconRename } from "../Icons/IconRename";
+import { IconAddProject } from "../Icons/IconAddProject";
+import { IconArchive } from "../Icons/IconArchive";
+import { IconDelete } from "../Icons/IconDelete";
+import { IconClose } from "@consta/icons/IconClose";
+
+import { Sidebar } from "@consta/uikit/Sidebar";
+import { useFlag } from "@consta/uikit/useFlag";
+import { List } from "@consta/uikit/ListCanary";
+import { IconPaperClip } from "../Icons/IconPaperClip";
 
 const QUICK_ACTIONS = [
   { key: "help" as const, label: "Помощь" },
   { key: "suggest" as const, label: "Что делать?" },
   { key: "save" as const, label: "Сохранить" },
 ];
+
+type Item = {
+  label: string;
+  id: number;
+  disabled: boolean;
+  icon?: any;
+};
+
+const itemsSidebar: Item[] = [
+  { label: "Архив", id: 1, disabled: false, icon: IconArchive },
+  { label: "Новый проект", id: 2, disabled: false, icon: IconAddProject },
+  { label: "Проект название 1", id: 3, disabled: false },
+  { label: "Задача", id: 4, disabled: false },
+];
+
+const FILES = [{ key: "1" as const, extension: "csv" }];
 
 export const ChatBot: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -471,14 +497,19 @@ export const ChatBot: React.FC = () => {
   };
 
   const items = [
-    { label: "Поделиться", icon: IconUpload },
-    { label: "Переименовать", icon: IconEdit },
-    { label: "Добавить в проект", icon: IconDocAdd },
-    { label: "Архивировать", icon: IconStorage },
-    { label: "Удалить", icon: IconTrash, status: "error" },
+    { label: "Поделиться", icon: IconShare },
+    { label: "Переименовать", icon: IconRename },
+    { label: "Добавить в проект", icon: IconAddProject },
+    { label: "Архивировать", icon: IconArchive },
+    { label: "Удалить", icon: IconDelete, status: "error" },
   ];
   const [isOpenMenu, setIsOpenMenu] = useState(false);
   const refMenu = useRef<any>(null);
+
+  const [openSidebar, setOpenSidebar] = useFlag();
+  const [openSidebarFiles, setOpenSidebarFiles] = useFlag();
+
+  const refAssistantWindow = useRef<any>(null);
 
   return (
     <>
@@ -510,6 +541,7 @@ export const ChatBot: React.FC = () => {
             left: `${position.x}px`,
             top: `${position.y}px`,
           }}
+          ref={refAssistantWindow}
         >
           <div
             className="chat-bot-header drag-handle"
@@ -529,17 +561,8 @@ export const ChatBot: React.FC = () => {
                 iconLeft={IconHamburger}
                 onlyIcon
                 view="clear"
-                ref={refMenu}
-                onClick={() => setIsOpenMenu(!isOpenMenu)}
+                onClick={setOpenSidebar.toggle}
                 className="chat-bot-menu-btn"
-              />
-              <ContextMenu
-                isOpen={isOpenMenu}
-                items={items}
-                getItemRightIcon={(item) => item.icon}
-                direction="downStartLeft"
-                anchorRef={refMenu}
-                onClickOutside={() => setIsOpenMenu(false)}
               />
 
               <div>
@@ -557,6 +580,16 @@ export const ChatBot: React.FC = () => {
               onlyIcon
               view="ghost"
               className="close-btn"
+              ref={refMenu}
+              onClick={() => setIsOpenMenu(!isOpenMenu)}
+            />
+            <ContextMenu
+              isOpen={isOpenMenu}
+              items={items}
+              getItemRightIcon={(item) => item.icon}
+              direction="downStartLeft"
+              anchorRef={refMenu}
+              onClickOutside={() => setIsOpenMenu(false)}
             />
           </div>
 
@@ -576,7 +609,7 @@ export const ChatBot: React.FC = () => {
             <div ref={messagesEndRef} />
           </div>
 
-          <div className="quick-actions">
+          {/* <div className="quick-actions">
             {QUICK_ACTIONS.map((action) => (
               <button
                 key={action.key}
@@ -587,9 +620,44 @@ export const ChatBot: React.FC = () => {
                 {action.label}
               </button>
             ))}
-          </div>
+          </div> */}
+
+          <Sidebar
+            isOpen={openSidebarFiles}
+            onClickOutside={setOpenSidebarFiles.off}
+            onEsc={setOpenSidebarFiles.off}
+            style={{ zIndex: 11 }}
+            container={refAssistantWindow}
+            position="bottom"
+            size="none"
+            className="chatSidebarFiles"
+          >
+            <div className="added-files-header">
+              <h3>Добавление файлов</h3>
+              <Button onlyIcon iconLeft={IconClose} size="s" view="clear" onClick={setOpenSidebarFiles.off} />
+            </div>
+            <div className="added-files">
+              <div className="added-files-list">
+                {FILES.map((file) => (
+                  <div className="added-file">
+                    <File size="s" extension={file.extension} />.{file.extension}
+                  </div>
+                ))}
+              </div>
+
+              <FileField id="FileFieldWithText" className="FileFieldWithText"><IconPaperClip/> Добавить файл</FileField>
+            </div>
+          </Sidebar>
 
           <form onSubmit={handleSendMessage} className="chat-input-form">
+            <Button
+              className="add-btn"
+              onlyIcon
+              iconLeft={IconAdd}
+              iconSize="s"
+              view="secondary"
+              onClick={setOpenSidebarFiles.toggle}
+            />
             <input
               type="text"
               value={inputValue}
@@ -597,19 +665,38 @@ export const ChatBot: React.FC = () => {
                 setInputValue(e.target.value)
               }
               placeholder={
-                isGenerating ? "AI генерирует ответ..." : "Задайте вопрос AI..."
+                isGenerating
+                  ? "Ассистент генерирует ответ..."
+                  : "Введите запрос..."
               }
               className="chat-input"
               disabled={isGenerating}
             />
-            <button
+            <Button
               type="submit"
-              className="send-btn"
+              onlyIcon
+              view="ghost"
               disabled={!inputValue.trim() || isGenerating}
-            >
-              {isGenerating ? "⏳" : "→"}
-            </button>
+              label={isGenerating ? "⏳" : "→"}
+            />
           </form>
+
+          <Sidebar
+            isOpen={openSidebar}
+            onEsc={setOpenSidebar.off}
+            style={{ zIndex: 11 }}
+            hasOverlay={false}
+            container={refAssistantWindow}
+            position="left"
+            size="none"
+            className="chatSidebar"
+          >
+            <List
+              items={itemsSidebar}
+              onItemClick={(item) => alert(`${item.label}`)}
+              getItemLeftIcon={(item) => item.icon}
+            />
+          </Sidebar>
 
           <div
             className="resize-handle resize-n"

@@ -1,16 +1,16 @@
 :root {
   /* Цвета из макета IFDP - панель ассистента */
   --bg-primary: #ffffff;
-  --bg-secondary: #6750A429;
+  --bg-secondary: #6750a429;
   --bg-header: #4f378b;
   --border-light: #f1f2f6;
   --border-medium: #e4e7ec;
-  --text-primary: #6750A4;
+  --text-primary: #6750a4;
   --text-secondary: #667085;
   --text-tertiary: #98a2b3;
-  --primary-blue: #6750A4;
+  --primary-blue: #6750a4;
   --primary-blue-hover: #3b286d;
-  --button-bg: #6750A4;
+  --button-bg: #6750a4;
   --button-border: #d0d5dd;
   --button-text: #fff;
 
@@ -33,6 +33,12 @@
   --space-4: 16px;
   --space-5: 20px;
   --space-6: 24px;
+
+  /*Consta*/
+  --color-control-bg-primary: #6750a4;
+  --color-control-bg-primary-hover: #3b286d;
+  --color-control-typo-primary: #fff;
+  --color-control-typo-primary-hover: #fff;
 }
 
 /* Плавающая кнопка - стиль из макета */
@@ -57,7 +63,7 @@
   z-index: 1000;
   font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
 
-  box-shadow: 0px 4px 16px 0px #9747FF33;
+  box-shadow: 0px 4px 16px 0px #9747ff33;
 }
 
 .chat-bot-floating-btn:hover {
@@ -101,14 +107,20 @@
   box-shadow: var(--shadow-floating);
   display: flex;
   flex-direction: column;
-  z-index: 1001;
+  z-index: 1;
   overflow: hidden;
   resize: none;
   font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
   min-width: 380px;
   min-height: 520px;
-  max-width: 600px;
+  /* max-width: 600px; */
   max-height: 700px;
+
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 120%;
 }
 
 /* Шапка окна - точный стиль из макета */
@@ -125,12 +137,12 @@
 }
 
 .chat-bot-header.drag-handle:hover {
-  background: #412d75;
+  background: var(--bg-header);
 }
 
 .chat-bot-header.drag-handle:active {
   cursor: grabbing;
-  background: #e8ebf0;
+  background: var(--primary-blue-hover);
 }
 
 .bot-info {
@@ -388,8 +400,8 @@
 }
 
 .quick-actions button:hover:not(:disabled) {
-  background: #f9fafb;
-  border-color: var(--border-medium);
+  background: var(--primary-blue-hover);
+  border-color: var(--primary-blue-hover);
   box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
 }
 
@@ -405,14 +417,74 @@
   border-color: var(--border-light);
 }
 
+.added-files {
+  display: flex;
+  gap: var(--space-2);
+  flex-direction: column;
+  padding: var(--space-3) var(--space-4);
+  background: #ecf1f4;
+  border-top: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-light);
+  flex-shrink: 0;
+}
+.added-files-list {
+  display: flex;
+  gap: var(--space-2);
+}
+.added-files-header {
+  background: #ecf1f4;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 18px;
+  border-bottom: 1px solid #00416633;
+}
+
+.added-files-header h3 {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 120%;
+
+  color: #002135;
+  margin: 0;
+  padding: auto;
+}
+
+.added-file {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 12px;
+  gap: 8px;
+
+  width: 110px;
+  height: 102px;
+
+  background: #ffffff;
+  border-radius: 8px;
+}
+
+.FileFieldWithText {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 12px;
+  gap: 8px;
+  background: #ffffff;
+  border-radius: 8px;
+}
+
 /* Форма ввода */
 .chat-input-form {
   display: flex;
-  padding: var(--space-4);
+  padding: 8px;
   background: var(--bg-primary);
   gap: var(--space-2);
   flex-shrink: 0;
-  align-items: flex-end;
+  align-items: center;
   border-top: 1px solid var(--border-light);
 }
 
@@ -595,7 +667,7 @@
   }
 
   .quick-actions {
-    padding: var(--space-3);
+    padding: var(--space-2) var(--space-3);
   }
 
   .chat-input-form {
@@ -681,48 +753,39 @@
   }
 }
 
-
-
-
-
-
-
-
-
-
 /* Стили для кнопок в сообщениях */
 .message-buttons {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
   gap: var(--space-2);
   margin-top: var(--space-3);
   width: 100%;
 }
 
 .message-button {
-  padding: 8px 12px;
+  padding: 8px 10px;
   border: 1px solid var(--button-border);
   border-radius: var(--radius-md);
   background: var(--button-bg);
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--button-text);
   cursor: pointer;
   transition: all 0.2s ease;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   line-height: 1.4;
-  text-align: left;
-  width: 100%;
 }
 
 .message-button:hover {
-  background: #F9FAFB;
   border-color: var(--border-medium);
   box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+  background: var(--primary-blue-hover);
+  border-color: var(--primary-blue-hover);
 }
 
 .message-button:active {
-  background: #F2F4F7;
+  background: #f2f4f7;
   border-color: var(--border-medium);
 }
 
@@ -730,7 +793,7 @@
 .message-button--primary {
   background: var(--primary-blue);
   border-color: var(--primary-blue);
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .message-button--primary:hover {
@@ -739,25 +802,25 @@
 }
 
 .message-button--primary:active {
-  background: #0E4ECD;
-  border-color: #0E4ECD;
+  background: #0e4ecd;
+  border-color: #0e4ecd;
 }
 
 /* Danger кнопки */
 .message-button--danger {
-  background: #FEF3F2;
-  border-color: #FDA29B;
-  color: #D92D20;
+  background: #fef3f2;
+  border-color: #fda29b;
+  color: #d92d20;
 }
 
 .message-button--danger:hover {
-  background: #FEE4E2;
-  border-color: #F97066;
+  background: #fee4e2;
+  border-color: #f97066;
 }
 
 .message-button--danger:active {
-  background: #FECDCA;
-  border-color: #F04438;
+  background: #fecdca;
+  border-color: #f04438;
 }
 
 /* Адаптация баббла для сообщений с кнопками */
@@ -786,9 +849,38 @@
   .message-buttons {
     gap: var(--space-1);
   }
-  
+
   .message-button {
     padding: 10px 12px;
     font-size: 14px;
   }
+}
+
+/*CONSTA OVERRIDE*/
+.Popover.ListBox_border {
+  border: none;
+  padding: 0;
+}
+
+.Popover .ListItemGrid {
+  box-shadow: 1px 1px #00416633;
+  padding: 12px 15px;
+}
+
+.Popover .ListItemGrid:last-child {
+  box-shadow: none;
+}
+
+.chat-bot-container .Sidebar {
+  position: absolute;
+  top: 50px;
+}
+
+.chat-bot-container .chatSidebar {
+  --sidebar-size: 335px;
+  padding: 8px 16px;
+}
+
+.chat-bot-container .chatSidebar .ListItemGrid {
+  padding: 12px 15px;
 }

@@ -15,6 +15,7 @@ import { FullscreenContainer } from "shared/ui/FullscreenContainer";
 import { AppProvider } from './contexts/AppContext';
 import { ChatBot } from './components/ChatBot/ChatBot';
 import MainApp from './components/MainApp/MainApp';
+import MainAppNode from './components/MainApp/MainAppNode';
 
 export const App = observer(() => {
   const { isLoading, isSuccess, isError, error } = useQuery({
@@ -35,7 +36,7 @@ export const App = observer(() => {
 
             <AppProvider>
               <div className="App">
-                <MainApp />
+                <MainAppNode />
                 <ChatBot />
               </div>
             </AppProvider>
