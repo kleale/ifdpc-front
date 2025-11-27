@@ -501,7 +501,7 @@ export const ChatBot: React.FC = () => {
     { label: "Переименовать", icon: IconRename },
     { label: "Добавить в проект", icon: IconAddProject },
     { label: "Архивировать", icon: IconArchive },
-    { label: "Удалить", icon: IconDelete, status: "error" },
+    { label: "Удалить", icon: IconDelete, status: "alert" },
   ];
   const [isOpenMenu, setIsOpenMenu] = useState(false);
   const refMenu = useRef<any>(null);
