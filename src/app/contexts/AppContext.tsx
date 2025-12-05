@@ -19,6 +19,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [currentPage, setCurrentPage] = useState<string>('home');
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [userData, setUserData] = useState<UserData>({});
+  const [graphData, setGraphData] = useState<any>();
   const [isFormDirty, setIsFormDirty] = useState<boolean>(false);
 
   const value: AppContextType = {
@@ -29,7 +30,9 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     userData,
     setUserData,
     isFormDirty,
-    setIsFormDirty
+    setIsFormDirty,
+    graphData, 
+    setGraphData
   };
 
   return (

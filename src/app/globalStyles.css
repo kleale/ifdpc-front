@@ -66,3 +66,15 @@ body {
   overflow: hidden; /* Обрезаем все, что не помещается в область */
   text-overflow: ellipsis; /* Добавляем многоточие */
 }
+
+
+.tooltip{
+  background-color: #fff;
+  font-size: 9px;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 5px 5px 10px #ccc;
+  max-width: 300px;
+  max-height: 200px;
+  overflow: auto;
+}

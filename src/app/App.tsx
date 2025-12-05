@@ -14,7 +14,6 @@ import { FullscreenContainer } from "shared/ui/FullscreenContainer";
 
 import { AppProvider } from './contexts/AppContext';
 import { ChatBot } from './components/ChatBot/ChatBot';
-import MainApp from './components/MainApp/MainApp';
 import MainAppNode from './components/MainApp/MainAppNode';
 
 export const App = observer(() => {
@@ -33,7 +32,6 @@ export const App = observer(() => {
         {isSuccess && (
           <BrowserRouter>
             {/* <AppRoutes /> */}
-
             <AppProvider>
               <div className="App">
                 <MainAppNode />

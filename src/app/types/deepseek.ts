@@ -1,24 +1,24 @@
-export interface DeepSeekMessage {
+export interface AIMessage {
   role: 'system' | 'user' | 'assistant';
   content: string;
 }
 
-export interface DeepSeekChatRequest {
+export interface AIChatRequest {
   model: string;
-  messages: DeepSeekMessage[];
+  messages: AIMessage[];
   stream?: boolean;
   temperature?: number;
   max_tokens?: number;
 }
 
-export interface DeepSeekChatResponse {
+export interface AIChatResponse {
   id: string;
   object: string;
   created: number;
   model: string;
   choices: {
     index: number;
-    message: DeepSeekMessage;
+    message: AIMessage;
     finish_reason: string;
   }[];
   usage: {
@@ -28,7 +28,7 @@ export interface DeepSeekChatResponse {
   };
 }
 
-export interface DeepSeekError {
+export interface AIError {
   error: {
     message: string;
     type: string;

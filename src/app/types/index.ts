@@ -2,7 +2,7 @@ export interface MessageButton {
   id: string;
   text: string;
   action?: string;
-  type?: 'primary' | 'secondary' | 'danger';
+  type?: "primary" | "secondary" | "danger";
 }
 
 export interface Message {
@@ -31,9 +31,12 @@ export interface AppContextType {
   setUserData: (data: UserData | ((prev: UserData) => UserData)) => void;
   isFormDirty: boolean;
   setIsFormDirty: (dirty: boolean) => void;
+
+  graphData: any;
+  setGraphData: (data: any[]) => void;
 }
 
-export type QuickAction = 'help' | 'suggest' | 'save' | 'cancel';
+export type QuickAction = "help" | "suggest" | "save" | "cancel";
 
 // Типы для ресайзинга
 export interface ChatBotPosition {
@@ -48,7 +51,7 @@ export interface ChatBotSize {
 
 export interface ResizeState {
   isResizing: boolean;
-  resizeDirection: 'n' | 's' | 'e' | 'w' | 'ne' | 'nw' | 'se' | 'sw' | null;
+  resizeDirection: "n" | "s" | "e" | "w" | "ne" | "nw" | "se" | "sw" | null;
   startX: number;
   startY: number;
   startWidth: number;

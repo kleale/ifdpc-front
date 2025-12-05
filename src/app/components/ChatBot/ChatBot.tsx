@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect, FormEvent } from "react";
 import { useContextSuggestions } from "../../hooks/useContextSuggestions";
-import { useDeepSeek } from "../../hooks/useDeepSeek";
+import { useAI } from "../../hooks/useAI";
 import { useResize } from "../../hooks/useResize";
 import { useDrag } from "../../hooks/useDrag";
 import { ChatMessage } from "./ChatMessage";
 import { Message, QuickAction, MessageButton } from "../../types";
 import "./ChatBot.css";
-import { DeepSeekMessage } from "app/types/deepseek";
+import { AIMessage } from "app/types/deepseek";
 import { Switch } from "@consta/uikit/Switch";
 import { IconMeatball } from "@consta/icons/IconMeatball";
 import { Button } from "@consta/uikit/Button";
@@ -27,12 +27,15 @@ import { Sidebar } from "@consta/uikit/Sidebar";
 import { useFlag } from "@consta/uikit/useFlag";
 import { List } from "@consta/uikit/ListCanary";
 import { IconPaperClip } from "../Icons/IconPaperClip";
+import { useAppContext } from "app/contexts/AppContext";
 
 const QUICK_ACTIONS = [
   { key: "help" as const, label: "Помощь" },
   { key: "suggest" as const, label: "Что делать?" },
   { key: "save" as const, label: "Сохранить" },
 ];
+
+
 
 type Item = {
   label: string;
@@ -51,6 +54,7 @@ const itemsSidebar: Item[] = [
 const FILES = [{ key: "1" as const, extension: "csv" }];
 
 export const ChatBot: React.FC = () => {
+  const { graphData } = useAppContext();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -67,8 +71,8 @@ export const ChatBot: React.FC = () => {
   ]);
   const [inputValue, setInputValue] = useState<string>("");
   const { suggestions, isLoading: suggestionsLoading } =
-    useContextSuggestions();
-  const { generateResponse, isGenerating, error } = useDeepSeek();
+    useContextSuggestions(graphData);
+  const { generateResponse, isGenerating, error } = useAI();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const {
@@ -257,14 +261,14 @@ export const ChatBot: React.FC = () => {
     setMessages((prev) => [...prev, loadingMessage]);
 
     try {
-      const deepSeekMessages: DeepSeekMessage[] = [
+      const AIMessages: AIMessage[] = [
         {
           role: "user",
           content: `Пользователь нажал кнопку: "${button.text}". Ответь кратко и полезно.`,
         },
       ];
 
-      const aiResponse = await generateResponse(deepSeekMessages);
+      const aiResponse = await generateResponse(AIMessages);
 
       const responseMessage: Message = {
         id: Date.now() + 2,
@@ -386,19 +390,19 @@ export const ChatBot: React.FC = () => {
     setMessages((prev) => [...prev, loadingMessage]);
 
     try {
-      const deepSeekMessages: DeepSeekMessage[] = messages
+      const AIMessages: AIMessage[] = messages
         .filter((msg) => !msg.isSuggestion && !msg.isError)
         .map((msg) => ({
           role: msg.isBot ? "assistant" : "user",
           content: msg.text,
         }));
 
-      deepSeekMessages.push({
+      AIMessages.push({
         role: "user",
         content: inputValue,
       });
 
-      const aiResponse = await generateResponse(deepSeekMessages);
+      const aiResponse = await generateResponse(AIMessages);
 
       setMessages((prev) =>
         prev
@@ -462,14 +466,14 @@ export const ChatBot: React.FC = () => {
           break;
       }
 
-      const deepSeekMessages: DeepSeekMessage[] = [
+      const AIMessages: AIMessage[] = [
         {
           role: "user",
           content: prompt,
         },
       ];
 
-      const aiResponse = await generateResponse(deepSeekMessages);
+      const aiResponse = await generateResponse(AIMessages);
 
       setMessages((prev) =>
         prev
