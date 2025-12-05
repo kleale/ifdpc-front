@@ -96,6 +96,5 @@ ${
 
 // Создаем экземпляр сервиса (API ключ должен быть в .env)
 export const AIService = new AIApiService(
-  import.meta.env.REACT_APP_OPENROUTER_API_KEY ||
-    "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"
+  import.meta.env.VITE_REACT_APP_OPENROUTER_API_KEY
 );

@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { DeepSeekChatRequest, DeepSeekChatResponse, DeepSeekError, AIMessage } from '../types/deepseek';
+import { AIChatRequest, AIChatResponse, AIError, AIMessage } from '../types/deepseek';
 
 
 const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
@@ -23,7 +23,7 @@ class DeepSeekApiService {
     } = {}
   ): Promise<string> {
     try {
-      const requestData: DeepSeekChatRequest = {
+      const requestData: AIChatRequest = {
         model: options.model || 'deepseek-chat',
         messages,
         temperature: options.temperature || 0.7,
@@ -31,7 +31,7 @@ class DeepSeekApiService {
         stream: options.stream || false,
       };
 
-      const response: AxiosResponse<DeepSeekChatResponse> = await axios.post(
+      const response: AxiosResponse<AIChatResponse> = await axios.post(
         this.baseURL,
         requestData,
         {
@@ -50,7 +50,7 @@ class DeepSeekApiService {
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const apiError = error.response?.data as DeepSeekError;
+        const apiError = error.response?.data as AIError;
         throw new Error(apiError?.error?.message || error.message);
       }
       throw error;
@@ -91,5 +91,5 @@ ${userMessage ? `Вопрос пользователя: ${userMessage}` : 'Сг�
 
 // Создаем экземпляр сервиса (API ключ должен быть в .env)
 export const deepSeekService = new DeepSeekApiService(
-  import.meta.env.REACT_APP_DEEPSEEK_API_KEY
+  import.meta.env.VITE_REACT_APP_DEEPSEEK_API_KEY
 );
