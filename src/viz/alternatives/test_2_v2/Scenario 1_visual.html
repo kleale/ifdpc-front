@@ -1,0 +1,127 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"borderColor": "#000000", "borderWidth": 1, "borderWidthSelected": 5, "color": "#FF6B6B", "font": {"color": "black"}, "id": 1000001, "label": 1000001, "shape": "dot", "size": 25, "title": "\n                    ID: 1000001\n                    Name: None\n                    Code: LFL\n                    Type: NODE_VALUE\n                    Function: None\n                "}, {"borderColor": "#000000", "borderWidth": 1, "borderWidthSelected": 5, "color": "#FF6B6B", "font": {"color": "black"}, "id": 1000002, "label": 1000002, "shape": "dot", "size": 25, "title": "\n                    ID: 1000002\n                    Name: None\n                    Code: LFR\n                    Type: NODE_VALUE\n                    Function: None\n                "}, {"borderColor": "#000000", "borderWidth": 1, "borderWidthSelected": 5, "color": "#FF6B6B", "font": {"color": "black"}, "id": 1000003, "label": 1000003, "shape": "dot", "size": 25, "title": "\n                    ID: 1000003\n                    Name: None\n                    Code: L_WELL\n                    Type: NODE_VALUE\n                    Function: None\n                "}, {"borderColor": "#000000", "borderWidth": 1, "borderWidthSelected": 5, "color": "#FF6B6B", "font": {"color": "black"}, "id": 1000004, "label": 1000004, "shape": "dot", "size": 25, "title": "\n                    ID: 1000004\n                    Name: None\n                    Code: MU_LIQUID\n                    Type: NODE_VALUE\n                    Function: None\n                "}, {"borderColor": "#000000", "borderWidth": 1, "borderWidthSelected": 5, "color": "#FF6B6B", "font": {"color": "black"}, "id": 1000005, "label": 1000005, "shape": "dot", "size": 25, "title": "\n                    ID: 1000005\n                    Name: None\n                    Code: N_FRAC\n                    Type: NODE_VALUE\n                    Function: None\n                "}, {"borderColor": "#000000", "borderWidth": 1, "borderWidthSelected": 5, "color": "#96CEB4", "font": {"color": "black"}, "id": 1000006, "label": 1000006, "shape": "dot", "size": 25, "title": "\n                    ID: 1000006\n                    Name: None\n                    Code: A\n                    Type: NODE_FORMULA\n                    Function: A=B_LIQUID * MU_LIQUID * (FRAC_HALF_LENGTH / FRAC_WIDTH / HEFF / KH / 0.001 + (LCOL - FRAC_HALF_LENGTH) / HEFF / KH / (LFL + LFR) / 0.001 + (ln(HEFF / r_w_m / 2) - pi / 2) * 1 / FRAC_WIDTH / KH / pi / 0.001 + 1 / FRAC_HALF_LENGTH / HEFF / KH / (1 / LFL + 1 / LFR) / 0.001)\n                "}, {"borderColor": "#000000", "borderWidth": 1, "borderWidthSelected": 5, "color": "#FF6B6B", "font": {"color": "black"}, "id": 1000007, "label": 1000007, "shape": "dot", "size": 25, "title": "\n                    ID: 1000007\n                    Name: None\n                    Code: PRESSURE_HORIZON\n                    Type: NODE_VALUE\n                    Function: None\n                "}, {"borderColor": "#000000", "borderWidth": 1, "borderWidthSelected": 5, "color": "#96CEB4", "font": {"color": "black"}, "id": 1000008, "label": 1000008, "shape": "dot", "size": 25, "title": "\n                    ID: 1000008\n                    Name: None\n                    Code: Q_LIQ\n                    Type: NODE_FORMULA\n                    Function: FOR(x=KAVG, x \u003c= END_DATE, x++, Q_LIQ[x] = EXPL_COEFF * KAVG * DECLINE_RATE[x] * Q_LIQ[x] * 365 / 1000)\n                "}, {"borderColor": "#000000", "borderWidth": 1, "borderWidthSelected": 5, "color": "#96CEB4", "font": {"color": "black"}, "id": 1000009, "label": 1000009, "shape": "dot", "size": 25, "title": "\n                    ID: 1000009\n                    Name: None\n                    Code: P_DIFF\n                    Type: NODE_FORMULA\n                    Function: FOR(x=START_DATE, x \u003c= END_DATE, x++, P_DIFF[x] = PRESSURE_HORIZON[x] - BHP[x])\n                "}, {"borderColor": "#000000", "borderWidth": 1, "borderWidthSelected": 5, "color": "#96CEB4", "font": {"color": "black"}, "id": 1000010, "label": 1000010, "shape": "dot", "size": 25, "title": "\n                    ID: 1000010\n                    Name: None\n                    Code: Q_START_LIQ_FRAC\n                    Type: NODE_FORMULA\n                    Function: FOR(x=START_DATE, x \u003c= END_DATE, x++, \u0415\u0421\u041b\u0418(WELL_TYPE == 2, qi[x] = P_DIFF[x] * 17.054 / A, qi[x] = 50)); Q_START_LIQ_FRAC=N_FRAC * qi\n                "}, {"borderColor": "#000000", "borderWidth": 1, "borderWidthSelected": 5, "color": "#FF6B6B", "font": {"color": "black"}, "id": 1000011, "label": 1000011, "shape": "dot", "size": 25, "title": "\n                    ID: 1000011\n                    Name: None\n                    Code: RHO_LIQUID\n                    Type: NODE_VALUE\n                    Function: None\n                "}, {"borderColor": "#000000", "borderWidth": 1, "borderWidthSelected": 5, "color": "#FF6B6B", "font": {"color": "black"}, "id": 1000012, "label": 1000012, "shape": "dot", "size": 25, "title": "\n                    ID: 1000012\n                    Name: None\n                    Code: START_DATE\n                    Type: NODE_VALUE\n                    Function: None\n                "}, {"borderColor": "#000000", "borderWidth": 1, "borderWidthSelected": 5, "color": "#FF6B6B", "font": {"color": "black"}, "id": 1000013, "label": 1000013, "shape": "dot", "size": 25, "title": "\n                    ID: 1000013\n                    Name: None\n                    Code: BHP\n                    Type: NODE_VALUE\n                    Function: None\n                "}, {"borderColor": "#000000", "borderWidth": 1, "borderWidthSelected": 5, "color": "#FF6B6B", "font": {"color": "black"}, "id": 1000014, "label": 1000014, "shape": "dot", "size": 25, "title": "\n                    ID: 1000014\n                    Name: None\n                    Code: B_LIQUID\n                    Type: NODE_VALUE\n                    Function: None\n                "}, {"borderColor": "#000000", "borderWidth": 1, "borderWidthSelected": 5, "color": "#FF6B6B", "font": {"color": "black"}, "id": 1000015, "label": 1000015, "shape": "dot", "size": 25, "title": "\n                    ID: 1000015\n                    Name: None\n                    Code: WELL_TYPE\n                    Type: NODE_VALUE\n                    Function: None\n                "}, {"borderColor": "#000000", "borderWidth": 1, "borderWidthSelected": 5, "color": "#FF6B6B", "font": {"color": "black"}, "id": 1000016, "label": 1000016, "shape": "dot", "size": 25, "title": "\n                    ID: 1000016\n                    Name: None\n                    Code: r_w_m\n                    Type: NODE_VALUE\n                    Function: None\n                "}, {"borderColor": "#000000", "borderWidth": 1, "borderWidthSelected": 5, "color": "#FF6B6B", "font": {"color": "black"}, "id": 1000017, "label": 1000017, "shape": "dot", "size": 25, "title": "\n                    ID: 1000017\n                    Name: None\n                    Code: DECLINE_RATE\n                    Type: NODE_VALUE\n                    Function: None\n                "}, {"borderColor": "#000000", "borderWidth": 1, "borderWidthSelected": 5, "color": "#FF6B6B", "font": {"color": "black"}, "id": 1000018, "label": 1000018, "shape": "dot", "size": 25, "title": "\n                    ID: 1000018\n                    Name: None\n                    Code: END_DATE\n                    Type: NODE_VALUE\n                    Function: None\n                "}, {"borderColor": "#000000", "borderWidth": 1, "borderWidthSelected": 5, "color": "#96CEB4", "font": {"color": "black"}, "id": 1000019, "label": 1000019, "shape": "dot", "size": 25, "title": "\n                    ID: 1000019\n                    Name: None\n                    Code: Q_LIQ_MASS\n                    Type: NODE_FORMULA\n                    Function: Q_LIQ_MASS=Q_LIQ_MASS * RHO_OIL / 1000\n                "}, {"borderColor": "#000000", "borderWidth": 1, "borderWidthSelected": 5, "color": "#FF6B6B", "font": {"color": "black"}, "id": 1000020, "label": 1000020, "shape": "dot", "size": 25, "title": "\n                    ID: 1000020\n                    Name: None\n                    Code: EXPL_COEFF\n                    Type: NODE_VALUE\n                    Function: None\n                "}, {"borderColor": "#000000", "borderWidth": 1, "borderWidthSelected": 5, "color": "#FF6B6B", "font": {"color": "black"}, "id": 1000021, "label": 1000021, "shape": "dot", "size": 25, "title": "\n                    ID: 1000021\n                    Name: None\n                    Code: FRAC_HALF_LENGTH\n                    Type: NODE_VALUE\n                    Function: None\n                "}, {"borderColor": "#000000", "borderWidth": 1, "borderWidthSelected": 5, "color": "#FF6B6B", "font": {"color": "black"}, "id": 1000022, "label": 1000022, "shape": "dot", "size": 25, "title": "\n                    ID: 1000022\n                    Name: None\n                    Code: FRAC_WIDTH\n                    Type: NODE_VALUE\n                    Function: None\n                "}, {"borderColor": "#000000", "borderWidth": 1, "borderWidthSelected": 5, "color": "#FF6B6B", "font": {"color": "black"}, "id": 1000023, "label": 1000023, "shape": "dot", "size": 25, "title": "\n                    ID: 1000023\n                    Name: None\n                    Code: HEFF\n                    Type: NODE_VALUE\n                    Function: None\n                "}, {"borderColor": "#000000", "borderWidth": 1, "borderWidthSelected": 5, "color": "#FF6B6B", "font": {"color": "black"}, "id": 1000024, "label": 1000024, "shape": "dot", "size": 25, "title": "\n                    ID: 1000024\n                    Name: None\n                    Code: KAVG\n                    Type: NODE_VALUE\n                    Function: None\n                "}, {"borderColor": "#000000", "borderWidth": 1, "borderWidthSelected": 5, "color": "#FF6B6B", "font": {"color": "black"}, "id": 1000025, "label": 1000025, "shape": "dot", "size": 25, "title": "\n                    ID: 1000025\n                    Name: None\n                    Code: KH\n                    Type: NODE_VALUE\n                    Function: None\n                "}, {"borderColor": "#000000", "borderWidth": 1, "borderWidthSelected": 5, "color": "#FF6B6B", "font": {"color": "black"}, "id": 1000026, "label": 1000026, "shape": "dot", "size": 25, "title": "\n                    ID: 1000026\n                    Name: None\n                    Code: LCOL\n                    Type: NODE_VALUE\n                    Function: None\n                "}]);
+                  edges = new vis.DataSet([{"arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "color": "#FF0000", "font": {"align": "middle", "size": 12}, "from": 1000001, "label": "", "to": 1000006, "width": 3}, {"arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "color": "#FF0000", "font": {"align": "middle", "size": 12}, "from": 1000002, "label": "", "to": 1000006, "width": 3}, {"arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "color": "#FF0000", "font": {"align": "middle", "size": 12}, "from": 1000003, "label": "", "to": 1000006, "width": 3}, {"arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "color": "#FF0000", "font": {"align": "middle", "size": 12}, "from": 1000004, "label": "", "to": 1000006, "width": 3}, {"arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "color": "#FF0000", "font": {"align": "middle", "size": 12}, "from": 1000005, "label": "", "to": 1000010, "width": 3}, {"arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "color": "#FF0000", "font": {"align": "middle", "size": 12}, "from": 1000006, "label": "", "to": 1000010, "width": 3}, {"arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "color": "#FF0000", "font": {"align": "middle", "size": 12}, "from": 1000007, "label": "", "to": 1000009, "width": 3}, {"arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "color": "#FF0000", "font": {"align": "middle", "size": 12}, "from": 1000008, "label": "", "to": 1000019, "width": 3}, {"arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "color": "#FF0000", "font": {"align": "middle", "size": 12}, "from": 1000009, "label": "", "to": 1000010, "width": 3}, {"arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "color": "#FF0000", "font": {"align": "middle", "size": 12}, "from": 1000010, "label": "", "to": 1000008, "width": 3}, {"arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "color": "#FF0000", "font": {"align": "middle", "size": 12}, "from": 1000011, "label": "", "to": 1000019, "width": 3}, {"arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "color": "#FF0000", "font": {"align": "middle", "size": 12}, "from": 1000012, "label": "", "to": 1000009, "width": 3}, {"arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "color": "#FF0000", "font": {"align": "middle", "size": 12}, "from": 1000012, "label": "", "to": 1000008, "width": 3}, {"arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "color": "#FF0000", "font": {"align": "middle", "size": 12}, "from": 1000012, "label": "", "to": 1000010, "width": 3}, {"arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "color": "#FF0000", "font": {"align": "middle", "size": 12}, "from": 1000013, "label": "", "to": 1000009, "width": 3}, {"arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "color": "#FF0000", "font": {"align": "middle", "size": 12}, "from": 1000014, "label": "", "to": 1000006, "width": 3}, {"arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "color": "#FF0000", "font": {"align": "middle", "size": 12}, "from": 1000015, "label": "", "to": 1000010, "width": 3}, {"arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "color": "#FF0000", "font": {"align": "middle", "size": 12}, "from": 1000016, "label": "", "to": 1000006, "width": 3}, {"arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "color": "#FF0000", "font": {"align": "middle", "size": 12}, "from": 1000017, "label": "", "to": 1000008, "width": 3}, {"arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "color": "#FF0000", "font": {"align": "middle", "size": 12}, "from": 1000018, "label": "", "to": 1000009, "width": 3}, {"arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "color": "#FF0000", "font": {"align": "middle", "size": 12}, "from": 1000018, "label": "", "to": 1000008, "width": 3}, {"arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "color": "#FF0000", "font": {"align": "middle", "size": 12}, "from": 1000018, "label": "", "to": 1000010, "width": 3}, {"arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "color": "#FF0000", "font": {"align": "middle", "size": 12}, "from": 1000020, "label": "", "to": 1000008, "width": 3}, {"arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "color": "#FF0000", "font": {"align": "middle", "size": 12}, "from": 1000021, "label": "", "to": 1000006, "width": 3}, {"arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "color": "#FF0000", "font": {"align": "middle", "size": 12}, "from": 1000022, "label": "", "to": 1000006, "width": 3}, {"arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "color": "#FF0000", "font": {"align": "middle", "size": 12}, "from": 1000023, "label": "", "to": 1000006, "width": 3}, {"arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "color": "#FF0000", "font": {"align": "middle", "size": 12}, "from": 1000024, "label": "", "to": 1000008, "width": 3}, {"arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "color": "#FF0000", "font": {"align": "middle", "size": 12}, "from": 1000025, "label": "", "to": 1000006, "width": 3}, {"arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "color": "#FF0000", "font": {"align": "middle", "size": 12}, "from": 1000026, "label": "", "to": 1000006, "width": 3}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"physics": {"enabled": true, "solver": "barnesHut", "barnesHut": {"gravitationalConstant": -8000, "centralGravity": 0.3, "springLength": 95, "springConstant": 0.04, "damping": 0.09, "avoidOverlap": 0.1}}};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
