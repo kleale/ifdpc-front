@@ -30,9 +30,9 @@ import { IconPaperClip } from "../Icons/IconPaperClip";
 import { useAppContext } from "app/contexts/AppContext";
 
 const QUICK_ACTIONS = [
-  { key: "help" as const, label: "Помощь" },
-  { key: "suggest" as const, label: "Что делать?" },
-  { key: "save" as const, label: "Сохранить" },
+  { key: "read" as const, label: "Прочти граф" },
+  { key: "alt" as const, label: "Альтернативы" },
+  { key: "recommend" as const, label: "Рекомендация узла" },
 ];
 
 
@@ -127,7 +127,7 @@ export const ChatBot: React.FC = () => {
     // Обрабатываем разные типы кнопок
     switch (button.id) {
       case "welcome-help":
-        handleQuickAction("help");
+        handleQuickAction("read");
         break;
       case "welcome-features":
         showFeatures();
@@ -453,16 +453,16 @@ export const ChatBot: React.FC = () => {
     try {
       let prompt = "";
       switch (actionKey) {
-        case "help":
+        case "read":
           prompt =
-            "Помоги мне разобраться с текущим разделом приложения. Какие основные функции доступны?";
+            "Проанализируй входные данные и запомни для твоих ответов" + JSON.stringify(graphData);
           break;
-        case "suggest":
+        case "alt":
           prompt =
-            "Что мне сделать сейчас в этом разделе? Дай конкретные рекомендации.";
+            "Запусти расчет альтернативных сценариев.";
           break;
-        case "save":
-          prompt = "Как правильно сохранить изменения в приложении?";
+        case "recommend":
+          prompt = "Рекомендуй новые узлы";
           break;
       }
 
@@ -613,7 +613,7 @@ export const ChatBot: React.FC = () => {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* <div className="quick-actions">
+           <div className="quick-actions">
             {QUICK_ACTIONS.map((action) => (
               <button
                 key={action.key}
@@ -624,7 +624,7 @@ export const ChatBot: React.FC = () => {
                 {action.label}
               </button>
             ))}
-          </div> */}
+          </div>
 
           <Sidebar
             isOpen={openSidebarFiles}

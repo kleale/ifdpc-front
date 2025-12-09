@@ -36,7 +36,7 @@ export interface AppContextType {
   setGraphData: (data: any[]) => void;
 }
 
-export type QuickAction = "help" | "suggest" | "save" | "cancel";
+export type QuickAction = "read" | "alt" | "recommend" | "cancel";
 
 // Типы для ресайзинга
 export interface ChatBotPosition {
