@@ -6,7 +6,7 @@ import { useDrag } from "../../hooks/useDrag";
 import { ChatMessage } from "./ChatMessage";
 import { Message, QuickAction, MessageButton } from "../../types";
 import "./ChatBot.css";
-import { AIMessage } from "app/types/deepseek";
+import { AIMessage } from "app/types/aiServiceTypes";
 import { Switch } from "@consta/uikit/Switch";
 import { IconMeatball } from "@consta/icons/IconMeatball";
 import { Button } from "@consta/uikit/Button";
@@ -29,33 +29,31 @@ import { List } from "@consta/uikit/ListCanary";
 import { IconPaperClip } from "../Icons/IconPaperClip";
 import { useAppContext } from "app/contexts/AppContext";
 
-const QUICK_ACTIONS = [
-  { key: "read" as const, label: "Прочти граф" },
-  { key: "alt" as const, label: "Альтернативы" },
-  { key: "recommend" as const, label: "Рекомендация узла" },
-];
+import { Modal } from "@consta/uikit/Modal";
+import { Layout } from "@consta/uikit/Layout";
+import { Tabs } from "@consta/uikit/Tabs";
+import MainAppNode from "../MainApp/MainAppNode";
+import { v4 as uuidv4 } from 'uuid';
 
+// DEMO JSONS
+import jsonPagerankInput from "./../../../viz/pagerank/input/nnp_3.json";
+import jsonPagerank1 from "./../../../viz/pagerank/test_3_step_1/pagerank_manual_result_nnp_3_1steps.json";
+import jsonPagerank2 from "./../../../viz/pagerank/test_3_step_2/pagerank_manual_result_nnp_3_1steps.json";
+import jsonPagerank3 from "./../../../viz/pagerank/test_3_step_2/pagerank_manual_result_nnp_3_1steps.json";
 
+import jsonAltInput from "./../../../viz/alternatives/input/target_node_2_v2.json";
+import jsonAlt1 from "./../../../viz/alternatives/test_2_v2/Scenario 1.json";
+import jsonAlt2 from "./../../../viz/alternatives/test_2_v2/Scenario 2.json";
+import jsonAlt3 from "./../../../viz/alternatives/test_2_v2/Scenario 3.json";
+import jsonAlt4 from "./../../../viz/alternatives/test_2_v2/Scenario 4.json";
+import jsonAlt5 from "./../../../viz/alternatives/test_2_v2/Scenario 5.json";
 
-type Item = {
-  label: string;
-  id: number;
-  disabled: boolean;
-  icon?: any;
-};
-
-const itemsSidebar: Item[] = [
-  { label: "Архив", id: 1, disabled: false, icon: IconArchive },
-  { label: "Новый проект", id: 2, disabled: false, icon: IconAddProject },
-  { label: "Проект название 1", id: 3, disabled: false },
-  { label: "Задача", id: 4, disabled: false },
-];
-
-const FILES = [{ key: "1" as const, extension: "csv" }];
 
 export const ChatBot: React.FC = () => {
-  const { graphData } = useAppContext();
+  const { graphData, setGraphData, graphDataAlt, setGraphDataAlt, setIsModal } =
+    useAppContext();
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
@@ -96,6 +94,16 @@ export const ChatBot: React.FC = () => {
     handleDragStart,
   } = useDrag(position);
 
+  // Modal
+  const tabs: string[] = [
+    "Сценарий 1",
+    "Сценарий 2",
+    "Сценарий 3",
+    "Сценарий 4",
+  ];
+  const getItemLabel = (label: string) => label;
+  const [tab, setTab] = useState<string | null>(tabs[0]);
+
   useEffect(() => {
     setPosition(dragPosition);
   }, [dragPosition, setPosition]);
@@ -116,7 +124,7 @@ export const ChatBot: React.FC = () => {
   }) => {
     // Добавляем сообщение пользователя с текстом кнопки
     const userMessage: Message = {
-      id: Date.now(),
+      id: uuidv4(),
       text: button.text,
       isBot: false,
       timestamp: new Date(),
@@ -138,12 +146,41 @@ export const ChatBot: React.FC = () => {
       case "create-project":
         handleCreateProject();
         break;
-      case "view-projects":
-        handleViewProjects();
+
+      case "alt-1":
+        doAltAlgoritm_1();
         break;
-      case "profile-settings":
-        handleProfileSettings();
+
+      case "alt-view-modal":
+        showAltModal();
         break;
+
+      case "recommendInput":
+        loadRecommendInput();
+        break;
+
+      case "loadRecommendOutput":
+        loadRecommendOutput();
+        break;
+
+      case "recommendLoadResult_1":
+        recommendLoadResult_1();
+        break;
+
+      case "recommendLoadResult_2":
+        recommendLoadResult_2();
+        break;
+
+      case "recommendLoadResult_3":
+        recommendLoadResult_3();
+        break;
+
+      // case "view-projects":
+      //   handleViewProjects();
+      //   break;
+      // case "profile-settings":
+      //   handleProfileSettings();
+      //   break;
       default:
         // Для остальных кнопок генерируем ответ через AI
         generateButtonResponse(button);
@@ -152,14 +189,21 @@ export const ChatBot: React.FC = () => {
 
   const showFeatures = () => {
     const featuresMessage: Message = {
-      id: Date.now() + 1,
-      text: "Вот основные возможности приложения:\n\n• Создание и управление проектами\n• Совместная работа с командой\n• Настройка профиля и уведомлений\n• Интеграция с внешними сервисами\n\nЧто вас интересует?",
+      id: uuidv4() + 1,
+      text: "Вот основные возможности:\n\n• Помощь в анализе и настройке проекта\n• Рекомендации новых узлов графа и их параметров \n• Расчет альтернативных графов \n\n Что вас интересует?",
       isBot: true,
       timestamp: new Date(),
       buttons: [
-        { id: "create-project", text: "Создать проект", type: "primary" },
-        { id: "view-projects", text: "Мои проекты", type: "secondary" },
-        { id: "profile-settings", text: "Настройки", type: "secondary" },
+        { id: "read", text: "Проанализируй текущий граф", type: "primary" },
+        { id: "recommend", text: "Рекомендация новых узлов", type: "primary" },
+        {
+          id: "alt",
+          text: "Рассчитай aльтернативные варианты",
+          type: "primary",
+        },
+        // { id: "create-project", text: "Создать проект", type: "primary" },
+        // { id: "view-projects", text: "Мои проекты", type: "secondary" },
+        // { id: "profile-settings", text: "Настройки", type: "secondary" },
       ],
     };
 
@@ -170,14 +214,21 @@ export const ChatBot: React.FC = () => {
 
   const showTutorial = () => {
     const tutorialMessage: Message = {
-      id: Date.now() + 1,
-      text: "Чтобы начать работу:\n\n1. Создайте проект или выберите существующий\n2. Добавьте участников для совместной работы\n3. Настройте параметры проекта\n4. Начните добавлять задачи и материалы\n\nНужна помощь с конкретным шагом?",
+      id: uuidv4() + 1,
+      text: "Чтобы начать работу:\n\n1. Создайте проект или выберите существующий\n2. Настройте параметры проекта\n3. Начните добавлять узлы и их параметры\n\nДалее можете запустить алгоритм расчета?",
       isBot: true,
       timestamp: new Date(),
       buttons: [
-        { id: "tutorial-step1", text: "Создание проекта", type: "secondary" },
-        { id: "tutorial-step2", text: "Добавление команды", type: "secondary" },
-        { id: "tutorial-step3", text: "Настройки", type: "secondary" },
+        { id: "read", text: "Проанализируй текущий граф", type: "primary" },
+        { id: "recommend", text: "Рекомендация новых узлов", type: "primary" },
+        {
+          id: "alt",
+          text: "Рассчитай aльтернативные варианты",
+          type: "primary",
+        },
+        // { id: "tutorial-step1", text: "Создание проекта", type: "secondary" },
+        // { id: "tutorial-step2", text: "Добавление команды", type: "secondary" },
+        // { id: "tutorial-step3", text: "Настройки", type: "secondary" },
       ],
     };
 
@@ -188,14 +239,14 @@ export const ChatBot: React.FC = () => {
 
   const handleCreateProject = () => {
     const responseMessage: Message = {
-      id: Date.now() + 1,
+      id: uuidv4() + 1,
       text: 'Отлично! Чтобы создать проект:\n\n1. Нажмите кнопку "Создать проект" в верхней панели\n2. Заполните название и описание\n3. Выберите настройки видимости\n4. Добавьте участников (опционально)\n5. Нажмите "Создать"\n\nХотите, чтобы я помог с заполнением?',
       isBot: true,
       timestamp: new Date(),
-      buttons: [
-        { id: "help-fill-form", text: "Помощь с заполнением", type: "primary" },
-        { id: "cancel-create", text: "Отмена", type: "secondary" },
-      ],
+      // buttons: [
+      //   { id: "help-fill-form", text: "Помощь с заполнением", type: "primary" },
+      //   { id: "cancel-create", text: "Отмена", type: "secondary" },
+      // ],
     };
 
     setTimeout(() => {
@@ -203,49 +254,49 @@ export const ChatBot: React.FC = () => {
     }, 500);
   };
 
-  const handleViewProjects = () => {
-    const responseMessage: Message = {
-      id: Date.now() + 1,
-      text: "Переход к списку проектов... У вас 3 активных проекта:\n\n• Веб-сайт компании (в работе)\n• Мобильное приложение (завершен)\n• Дизайн система (планирование)\n\nКакой проект вас интересует?",
-      isBot: true,
-      timestamp: new Date(),
-      buttons: [
-        { id: "project-1", text: "Веб-сайт", type: "secondary" },
-        { id: "project-2", text: "Мобильное приложение", type: "secondary" },
-        { id: "project-3", text: "Дизайн система", type: "secondary" },
-      ],
-    };
+  // const handleViewProjects = () => {
+  //   const responseMessage: Message = {
+  //     id: uuidv4() + 1,
+  //     text: "Переход к списку проектов... У вас 3 активных проекта:\n\n• Веб-сайт компании (в работе)\n• Мобильное приложение (завершен)\n• Дизайн система (планирование)\n\nКакой проект вас интересует?",
+  //     isBot: true,
+  //     timestamp: new Date(),
+  //     buttons: [
+  //       { id: "project-1", text: "Веб-сайт", type: "secondary" },
+  //       { id: "project-2", text: "Мобильное приложение", type: "secondary" },
+  //       { id: "project-3", text: "Дизайн система", type: "secondary" },
+  //     ],
+  //   };
 
-    setTimeout(() => {
-      setMessages((prev) => [...prev, responseMessage]);
-    }, 500);
-  };
+  //   setTimeout(() => {
+  //     setMessages((prev) => [...prev, responseMessage]);
+  //   }, 500);
+  // };
 
-  const handleProfileSettings = () => {
-    const responseMessage: Message = {
-      id: Date.now() + 1,
-      text: "Настройки профиля:\n\n• Личная информация\n• Уведомления\n• Безопасность\n• Интеграции\n\nКакой раздел настроек вас интересует?",
-      isBot: true,
-      timestamp: new Date(),
-      buttons: [
-        {
-          id: "settings-profile",
-          text: "Личная информация",
-          type: "secondary",
-        },
-        {
-          id: "settings-notifications",
-          text: "Уведомления",
-          type: "secondary",
-        },
-        { id: "settings-security", text: "Безопасность", type: "secondary" },
-      ],
-    };
+  // const handleProfileSettings = () => {
+  //   const responseMessage: Message = {
+  //     id: uuidv4() + 1,
+  //     text: "Настройки профиля:\n\n• Личная информация\n• Уведомления\n• Безопасность\n• Интеграции\n\nКакой раздел настроек вас интересует?",
+  //     isBot: true,
+  //     timestamp: new Date(),
+  //     buttons: [
+  //       {
+  //         id: "settings-profile",
+  //         text: "Личная информация",
+  //         type: "secondary",
+  //       },
+  //       {
+  //         id: "settings-notifications",
+  //         text: "Уведомления",
+  //         type: "secondary",
+  //       },
+  //       { id: "settings-security", text: "Безопасность", type: "secondary" },
+  //     ],
+  //   };
 
-    setTimeout(() => {
-      setMessages((prev) => [...prev, responseMessage]);
-    }, 500);
-  };
+  //   setTimeout(() => {
+  //     setMessages((prev) => [...prev, responseMessage]);
+  //   }, 500);
+  // };
 
   const generateButtonResponse = async (button: {
     id: string;
@@ -253,7 +304,7 @@ export const ChatBot: React.FC = () => {
     action?: string;
   }) => {
     const loadingMessage: Message = {
-      id: Date.now() + 1,
+      id: uuidv4() + 1,
       text: "Думаю...",
       isBot: true,
       timestamp: new Date(),
@@ -271,7 +322,7 @@ export const ChatBot: React.FC = () => {
       const aiResponse = await generateResponse(AIMessages);
 
       const responseMessage: Message = {
-        id: Date.now() + 2,
+        id: uuidv4() + 2,
         text: aiResponse,
         isBot: true,
         timestamp: new Date(),
@@ -295,7 +346,7 @@ export const ChatBot: React.FC = () => {
         prev
           .filter((msg) => msg.id !== loadingMessage.id)
           .concat({
-            id: Date.now() + 2,
+            id: uuidv4() + 2,
             text: "Извините, не удалось обработать запрос. Попробуйте еще раз.",
             isBot: true,
             isError: true,
@@ -316,7 +367,7 @@ export const ChatBot: React.FC = () => {
         !lastMessage.buttons
       ) {
         const suggestionMessage: Message = {
-          id: Date.now(),
+          id: uuidv4(),
           text: `💡 ${suggestions[0]}`,
           isBot: true,
           isSuggestion: true,
@@ -337,11 +388,12 @@ export const ChatBot: React.FC = () => {
 
   useEffect(() => {
     if (isOpen && suggestions.length > 0 && !suggestionsLoading) {
+      //debugger
       const lastMessage = messages[messages.length - 1];
 
       if (!lastMessage.isSuggestion && !lastMessage.isBot) {
         const suggestionMessage: Message = {
-          id: Date.now(),
+          id: uuidv4(),
           text: `💡 ${suggestions[0]}`,
           isBot: true,
           isSuggestion: true,
@@ -355,7 +407,7 @@ export const ChatBot: React.FC = () => {
   useEffect(() => {
     if (error) {
       const errorMessage: Message = {
-        id: Date.now(),
+        id: uuidv4(),
         text: "Извините, произошла ошибка при подключении к AI. Пожалуйста, попробуйте позже.",
         isBot: true,
         isError: true,
@@ -365,6 +417,33 @@ export const ChatBot: React.FC = () => {
     }
   }, [error]);
 
+  useEffect(() => {
+    switch (tab) {
+      case "Сценарий 1":
+        setGraphDataAlt(jsonAlt1);
+        break;
+      case "Сценарий 2":
+        setGraphDataAlt(jsonAlt2);
+        break;
+      case "Сценарий 3":
+        setGraphDataAlt(jsonAlt3);
+        break;
+      case "Сценарий 4":
+        setGraphDataAlt(jsonAlt4);
+        break;
+      case "Сценарий 5":
+        setGraphDataAlt(jsonAlt5);
+        break;
+
+      default:
+        setGraphDataAlt(jsonAltInput);
+    }
+  }, [tabs]);
+
+  useEffect(() => {
+    setIsModal(isModalOpen);
+  }, [isModalOpen]);
+
   const handleSendMessage = async (
     e: FormEvent<HTMLFormElement>
   ): Promise<void> => {
@@ -372,7 +451,7 @@ export const ChatBot: React.FC = () => {
     if (!inputValue.trim() || isGenerating) return;
 
     const userMessage: Message = {
-      id: Date.now(),
+      id: uuidv4(),
       text: inputValue,
       isBot: false,
       timestamp: new Date(),
@@ -382,7 +461,7 @@ export const ChatBot: React.FC = () => {
     setInputValue("");
 
     const loadingMessage: Message = {
-      id: Date.now() + 1,
+      id: uuidv4() + 1,
       text: "Думаю...",
       isBot: true,
       timestamp: new Date(),
@@ -408,7 +487,7 @@ export const ChatBot: React.FC = () => {
         prev
           .filter((msg) => msg.id !== loadingMessage.id)
           .concat({
-            id: Date.now() + 2,
+            id: uuidv4() + 2,
             text: aiResponse,
             isBot: true,
             timestamp: new Date(),
@@ -419,7 +498,7 @@ export const ChatBot: React.FC = () => {
         prev
           .filter((msg) => msg.id !== loadingMessage.id)
           .concat({
-            id: Date.now() + 2,
+            id: uuidv4() + 2,
             text: "Извините, не удалось получить ответ. Пожалуйста, попробуйте еще раз.",
             isBot: true,
             isError: true,
@@ -429,12 +508,196 @@ export const ChatBot: React.FC = () => {
     }
   };
 
+  // КНОПКИ
+
+  const doAltAlgoritm = () => {
+    setGraphData(jsonAltInput);
+
+    const responseMessage: Message = {
+      id: uuidv4() + 1,
+      text: "Для запуска рачсета альтернатив выберите стартовый узел, выделив его на проекте и нажите кнопку Далее",
+      isBot: true,
+      timestamp: new Date(),
+      buttons: [
+        { id: "alt-1", text: "Далее", type: "primary" },
+        { id: "cancel", text: "Отмена", type: "secondary" },
+      ],
+    };
+
+    setTimeout(() => {
+      setMessages((prev) => [...prev, responseMessage]);
+    }, 500);
+  };
+
+  const doAltAlgoritm_1 = () => {
+    const loadingMessage: Message = {
+      id: uuidv4() + 1,
+      text: "Думаю...",
+      isBot: true,
+      timestamp: new Date(),
+    };
+    setMessages((prev) => [...prev, loadingMessage]);
+
+    const responseMessage: Message = {
+      id: uuidv4() + 1,
+      text: "Рассчитано 5 альтернативных сценариев",
+      isBot: true,
+      timestamp: new Date(),
+      buttons: [
+        { id: "alt-view-modal", text: "Просмотр сценариев", type: "secondary" },
+      ],
+    };
+
+    setTimeout(() => {
+      setMessages((prev) => [...prev, responseMessage]);
+    }, 3500);
+  };
+
+  const showAltModal = () => {
+    setIsModalOpen(true);
+
+    const responseMessage: Message = {
+      id: uuidv4() + 1,
+      text: "Открыто окно просмотра сценариев",
+      isBot: true,
+      timestamp: new Date(),
+    };
+
+    setTimeout(() => {
+      setMessages((prev) => [...prev, responseMessage]);
+    }, 500);
+  };
+
+  const doRecommendAlgoritm = () => {
+    const responseMessage: Message = {
+      id: uuidv4() + 1,
+      text: "Загрузить тестовый пример:",
+      isBot: true,
+      timestamp: new Date(),
+      buttons: [
+        {
+          id: "recommendInput",
+          text: "Пример рекомендации 1",
+          type: "primary",
+        },
+      ],
+    };
+
+    setTimeout(() => {
+      setMessages((prev) => [...prev, responseMessage]);
+    }, 500);
+  };
+
+  const loadRecommendInput = () => {
+    setGraphData(jsonPagerankInput);
+
+    const responseMessage: Message = {
+      id: uuidv4() + 1,
+      text: "Начать рассчет рекомендованных узлов?",
+      isBot: true,
+      timestamp: new Date(),
+      buttons: [
+        { id: "loadRecommendOutput", text: "Да", type: "primary" },
+        {
+          id: "recommendInput",
+          text: "Отмена, вернуться к исходному",
+          type: "primary",
+        },
+      ],
+    };
+
+    setTimeout(() => {
+      setMessages((prev) => [...prev, responseMessage]);
+    }, 500);
+  };
+
+  const loadRecommendOutput = () => {
+    const loadingMessage: Message = {
+      id: uuidv4() + 1,
+      text: "Думаю...",
+      isBot: true,
+      timestamp: new Date(),
+    };
+    setMessages((prev) => [...prev, loadingMessage]);
+
+    const responseMessage: Message = {
+      id: uuidv4() + 1,
+      text: "Получено 3 варианта. Какой вывести?",
+      isBot: true,
+      timestamp: new Date(),
+      buttons: [
+        { id: "recommendLoadResult_1", text: "Вариант 1", type: "primary" },
+        { id: "recommendLoadResult_2", text: "Вариант 2", type: "primary" },
+        { id: "recommendLoadResult_3", text: "Вариант 3", type: "primary" },
+      ],
+    };
+
+    setTimeout(() => {
+      setMessages((prev) => [...prev, responseMessage]);
+    }, 2500);
+  };
+
+  const recommendLoadResult_1 = () => {
+    setGraphData(jsonPagerank1);
+
+    const responseMessage: Message = {
+      id: uuidv4() + 1,
+      text: "Рассчет выведен",
+      isBot: true,
+      timestamp: new Date(),
+      buttons: [
+        { id: "recommendLoadResult_1", text: "Вариант 1", type: "primary" },
+        { id: "recommendLoadResult_2", text: "Вариант 2", type: "primary" },
+        { id: "recommendLoadResult_3", text: "Вариант 3", type: "primary" },
+        { id: "recommendInput", text: "К началу", type: "primary" },
+      ],
+    };
+
+    setTimeout(() => {
+      setMessages((prev) => [...prev, responseMessage]);
+    }, 500);
+  };
+
+  const recommendLoadResult_2 = () => {
+    setGraphData(jsonPagerank2);
+
+    const responseMessage: Message = {
+      id: uuidv4() + 1,
+      text: "Рассчет выведен",
+      isBot: true,
+      timestamp: new Date(),
+    };
+
+    setTimeout(() => {
+      setMessages((prev) => [...prev, responseMessage]);
+    }, 500);
+  };
+
+  const recommendLoadResult_3 = () => {
+    setGraphData(jsonPagerank3);
+
+    const responseMessage: Message = {
+      id: uuidv4() + 1,
+      text: "Рассчет выведен",
+      isBot: true,
+      timestamp: new Date(),
+    };
+
+    setTimeout(() => {
+      setMessages((prev) => [...prev, responseMessage]);
+    }, 500);
+  };
+
   const handleQuickAction = async (actionKey: QuickAction): Promise<void> => {
     const action = QUICK_ACTIONS.find((a) => a.key === actionKey);
     if (!action) return;
 
+    if (action.key == "alt") return doAltAlgoritm();
+    if (action.key == "recommend") return doRecommendAlgoritm();
+
     const actionMessage: Message = {
-      id: Date.now(),
+      id: uuidv4(),
+      //@ts-ignore
       text: action.label,
       isBot: false,
       timestamp: new Date(),
@@ -443,7 +706,7 @@ export const ChatBot: React.FC = () => {
     setMessages((prev) => [...prev, actionMessage]);
 
     const loadingMessage: Message = {
-      id: Date.now() + 1,
+      id: uuidv4() + 1,
       text: "Думаю...",
       isBot: true,
       timestamp: new Date(),
@@ -455,11 +718,11 @@ export const ChatBot: React.FC = () => {
       switch (actionKey) {
         case "read":
           prompt =
-            "Проанализируй входные данные и запомни для твоих ответов" + JSON.stringify(graphData);
+            "Проанализируй входные данные и запомни для твоих ответов" +
+            JSON.stringify(graphData);
           break;
         case "alt":
-          prompt =
-            "Запусти расчет альтернативных сценариев.";
+          prompt = "Запусти расчет альтернативных сценариев.";
           break;
         case "recommend":
           prompt = "Рекомендуй новые узлы";
@@ -479,7 +742,7 @@ export const ChatBot: React.FC = () => {
         prev
           .filter((msg) => msg.id !== loadingMessage.id)
           .concat({
-            id: Date.now() + 2,
+            id: uuidv4() + 2,
             text: aiResponse,
             isBot: true,
             timestamp: new Date(),
@@ -490,7 +753,7 @@ export const ChatBot: React.FC = () => {
         prev
           .filter((msg) => msg.id !== loadingMessage.id)
           .concat({
-            id: Date.now() + 2,
+            id: uuidv4() + 2,
             text: "Не удалось обработать запрос. Попробуйте еще раз.",
             isBot: true,
             isError: true,
@@ -499,6 +762,21 @@ export const ChatBot: React.FC = () => {
       );
     }
   };
+
+  const submitAltScenario = () => {
+    setGraphData(graphDataAlt);
+
+    const responseMessage: Message = {
+      id: uuidv4() + 1,
+      text: "Альтернативный сценарий добавлен в проект",
+      isBot: true,
+      timestamp: new Date(),
+    };
+
+    setTimeout(() => {
+      setMessages((prev) => [...prev, responseMessage]);
+    }, 500);
+  }
 
   const items = [
     { label: "Поделиться", icon: IconShare },
@@ -613,7 +891,7 @@ export const ChatBot: React.FC = () => {
             <div ref={messagesEndRef} />
           </div>
 
-           <div className="quick-actions">
+          <div className="quick-actions">
             {QUICK_ACTIONS.map((action) => (
               <button
                 key={action.key}
@@ -638,18 +916,27 @@ export const ChatBot: React.FC = () => {
           >
             <div className="added-files-header">
               <h3>Добавление файлов</h3>
-              <Button onlyIcon iconLeft={IconClose} size="s" view="clear" onClick={setOpenSidebarFiles.off} />
+              <Button
+                onlyIcon
+                iconLeft={IconClose}
+                size="s"
+                view="clear"
+                onClick={setOpenSidebarFiles.off}
+              />
             </div>
             <div className="added-files">
               <div className="added-files-list">
                 {FILES.map((file) => (
                   <div className="added-file">
-                    <File size="s" extension={file.extension} />.{file.extension}
+                    <File size="s" extension={file.extension} />.
+                    {file.extension}
                   </div>
                 ))}
               </div>
 
-              <FileField id="FileFieldWithText" className="FileFieldWithText"><IconPaperClip/> Добавить файл</FileField>
+              <FileField id="FileFieldWithText" className="FileFieldWithText">
+                <IconPaperClip /> Добавить файл
+              </FileField>
             </div>
           </Sidebar>
 
@@ -736,6 +1023,78 @@ export const ChatBot: React.FC = () => {
           />
         </div>
       )}
+
+      <Modal
+        isOpen={isModalOpen}
+        hasOverlay
+        onClickOutside={() => setIsModalOpen(false)}
+        onEsc={() => setIsModalOpen(false)}
+        className="modal"
+      >
+        <Layout className="modalHeader">
+          <h2>Альтернативные сценарии</h2>
+          <Button
+            size="s"
+            view="ghost"
+            onlyIcon
+            iconLeft={IconClose}
+            onClick={() => setIsModalOpen(false)}
+          />
+        </Layout>
+        <Tabs
+          className="modalTabs"
+          value={tab}
+          onChange={setTab}
+          items={tabs}
+          getItemLabel={getItemLabel}
+        />
+        <div className="modalContent">
+          <MainAppNode />
+        </div>
+        <div className="modalBar">
+          <Button
+            size="s"
+            view="primary"
+            label="Добавить сценарий в проект"
+            onClick={() => {
+              submitAltScenario()
+              setIsModalOpen(false)
+            }}
+          />
+          <Button
+            size="s"
+            view="secondary"
+            label="Закрыть"
+            onClick={() => {
+              setIsModalOpen(false)
+            }}
+          />
+        </div>
+      </Modal>
     </>
   );
 };
+
+//// CONST
+
+const QUICK_ACTIONS = [
+  // { key: "read" as const, label: "Прочти граф" },
+  { key: "alt" as const, label: "Альтернативы" },
+  { key: "recommend" as const, label: "Рекомендация узла" },
+];
+
+type Item = {
+  label: string;
+  id: number;
+  disabled: boolean;
+  icon?: any;
+};
+
+const itemsSidebar: Item[] = [
+  { label: "Архив", id: 1, disabled: false, icon: IconArchive },
+  { label: "Новый проект", id: 2, disabled: false, icon: IconAddProject },
+  { label: "Проект название 1", id: 3, disabled: false },
+  { label: "Задача", id: 4, disabled: false },
+];
+
+const FILES = [{ key: "1" as const, extension: "csv" }];

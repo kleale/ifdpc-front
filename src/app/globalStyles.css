@@ -67,7 +67,6 @@ body {
   text-overflow: ellipsis; /* Добавляем многоточие */
 }
 
-
 .tooltip{
   background-color: #fff;
   font-size: 9px;
@@ -77,4 +76,8 @@ body {
   max-width: 300px;
   max-height: 200px;
   overflow: auto;
+}
+
+.calculatedNode{
+  opacity: .4;
 }

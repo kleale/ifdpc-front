@@ -6,7 +6,7 @@ export interface MessageButton {
 }
 
 export interface Message {
-  id: number;
+  id: any;
   text: string;
   isBot: boolean;
   timestamp: Date;
@@ -33,7 +33,11 @@ export interface AppContextType {
   setIsFormDirty: (dirty: boolean) => void;
 
   graphData: any;
-  setGraphData: (data: any[]) => void;
+  setGraphData: (data: any) => void;
+  graphDataAlt: any;
+  setGraphDataAlt: (data: any) => void;
+  isModal: boolean;
+  setIsModal: (data: boolean) => void;
 }
 
 export type QuickAction = "read" | "alt" | "recommend" | "cancel";

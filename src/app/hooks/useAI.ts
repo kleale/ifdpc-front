@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 //import { deepSeekService } from '../services/deepseekApi';
 import { AIService } from '../services/openRouterApi';
-import { AIMessage } from '../types/deepseek';
+import { AIMessage } from '../types/aiServiceTypes';
 
 interface UseAIReturn {
   isGenerating: boolean;

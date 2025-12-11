@@ -11,6 +11,7 @@ export const useContextSuggestions = (
   const [aiSuggestion, setAiSuggestion] = useState<string>("");
 
   useEffect(() => {
+
     const generateContextDescription = (): string => {
       let context =
         "Запомни эти данные и контектст JSON и отвечай всегда опираясь на них: " +
@@ -62,39 +63,39 @@ export const useContextSuggestions = (
     // Генерируем базовые подсказки
     const baseSuggestions: string[] = [];
 
-    switch (currentPage) {
-      case "home":
-        baseSuggestions.push(
-          "Создайте новый проект или просмотрите существующие",
-          "Используйте поиск для быстрого доступа к функциям"
-        );
-        break;
-      case "projects":
-        if (selectedItem) {
-          baseSuggestions.push(
-            `Редактируйте проект "${selectedItem}"`,
-            "Добавьте участников для совместной работы"
-          );
-        } else {
-          baseSuggestions.push(
-            "Выберите проект для детального просмотра",
-            "Создайте новый проект"
-          );
-        }
-        break;
-      case "profile":
-        baseSuggestions.push(
-          "Обновите личную информацию",
-          "Проверьте настройки уведомлений"
-        );
-        break;
-      case "settings":
-        baseSuggestions.push(
-          "Настройте параметры безопасности",
-          "Проверьте подключенные интеграции"
-        );
-        break;
-    }
+    // switch (currentPage) {
+    //   case "home":
+    //     baseSuggestions.push(
+    //       "Создайте новый проект или просмотрите существующие",
+    //       "Используйте поиск для быстрого доступа к функциям"
+    //     );
+    //     break;
+    //   case "projects":
+    //     if (selectedItem) {
+    //       baseSuggestions.push(
+    //         `Редактируйте проект "${selectedItem}"`,
+    //         "Добавьте участников для совместной работы"
+    //       );
+    //     } else {
+    //       baseSuggestions.push(
+    //         "Выберите проект для детального просмотра",
+    //         "Создайте новый проект"
+    //       );
+    //     }
+    //     break;
+    //   case "profile":
+    //     baseSuggestions.push(
+    //       "Обновите личную информацию",
+    //       "Проверьте настройки уведомлений"
+    //     );
+    //     break;
+    //   case "settings":
+    //     baseSuggestions.push(
+    //       "Настройте параметры безопасности",
+    //       "Проверьте подключенные интеграции"
+    //     );
+    //     break;
+    // }
 
     if (isFormDirty) {
       baseSuggestions.push("Сохраните несохраненные изменения");

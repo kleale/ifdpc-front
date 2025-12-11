@@ -41,7 +41,7 @@ class AIApiService {
           timeout: 30000,
         }
       );
-      
+
       if (response.data.choices && response.data.choices.length > 0) {
         return response.data.choices[0].message.content;
       } else {

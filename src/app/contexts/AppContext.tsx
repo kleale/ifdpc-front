@@ -20,7 +20,10 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [userData, setUserData] = useState<UserData>({});
   const [graphData, setGraphData] = useState<any>();
+  const [graphDataAlt, setGraphDataAlt] = useState<any>();
   const [isFormDirty, setIsFormDirty] = useState<boolean>(false);
+  const [isModal, setIsModal] = useState<boolean>(false);
+ 
 
   const value: AppContextType = {
     currentPage,
@@ -32,7 +35,11 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     isFormDirty,
     setIsFormDirty,
     graphData, 
-    setGraphData
+    setGraphData,
+    graphDataAlt, 
+    setGraphDataAlt,
+    isModal, 
+    setIsModal
   };
 
   return (

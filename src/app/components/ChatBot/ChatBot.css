@@ -884,3 +884,40 @@
 .chat-bot-container .chatSidebar .ListItemGrid {
   padding: 12px 15px;
 }
+
+.modal {
+  padding: 20px;
+  width: 100%;
+}
+
+.modalHeader {
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  justify-content: space-between;
+  padding-bottom: 10px;
+}
+
+.modalHeader h2 {
+  padding: 0;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.modalContent {
+  height: 600px;
+  overflow: auto;
+}
+
+.modalTabs{
+  padding: 0 15px;
+}
+
+.modalBar{
+  gap: 10px;
+  display: flex;
+  padding: 10px 0 0;
+  align-items: end;
+  justify-content: end;
+}
