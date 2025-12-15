@@ -99,9 +99,9 @@ export const ChatBot: React.FC = () => {
   // Modal
   const tabs: string[] = [
     "Сценарий 1",
-    "Сценарий 2",
-    "Сценарий 3",
-    "Сценарий 4",
+    "Сценарий 2"
+    // "Сценарий 3",
+    // "Сценарий 4",
   ];
   const getItemLabel = (label: string) => label;
   const [tab, setTab] = useState<string | null>(tabs[0]);
@@ -166,7 +166,7 @@ export const ChatBot: React.FC = () => {
         break;
 
       case "recommendLoadResult_1":
-        recommendLoadResult_1();
+        recommendLoadResult_var(jsonPagerank1);
         break;
 
       case "recommendLoadResult_2":
@@ -587,7 +587,7 @@ export const ChatBot: React.FC = () => {
       buttons: [
         {
           id: "recommendInput",
-          text: "Пример рекомендации 1",
+          text: "Пример рекомендаций узлов графа",
           type: "primary",
         },
       ],
@@ -649,27 +649,6 @@ export const ChatBot: React.FC = () => {
     }, 2500);
   };
 
-  const recommendLoadResult_1 = () => {
-    setGraphData(jsonPagerank1);
-
-    const responseMessage: Message = {
-      id: uuidv4() + 1,
-      text: "Рассчет выведен",
-      isBot: true,
-      timestamp: new Date(),
-      buttons: [
-        { id: "recommendLoadResult_1", text: "Шаг 1", type: "primary" },
-        { id: "recommendLoadResult_2", text: "Шаг 2", type: "primary" },
-        { id: "recommendLoadResult_3", text: "Шаг 3", type: "primary" },
-        { id: "recommendInput", text: "К началу", type: "primary" },
-      ],
-    };
-
-    setTimeout(() => {
-      setMessages((prev) => [...prev, responseMessage]);
-    }, 500);
-  };
-
   const recommendLoadResult_var = (json: any) => {
     setGraphData(json);
 
@@ -678,6 +657,13 @@ export const ChatBot: React.FC = () => {
       text: "Рассчет выведен",
       isBot: true,
       timestamp: new Date(),
+      buttons: [
+        { id: "recommendLoadResult_2", text: "Шаг 2", type: "primary" },
+        { id: "recommendLoadResult_3", text: "Шаг 3", type: "primary" },
+        { id: "recommendLoadResult_4", text: "Шаг 4", type: "primary" },
+        { id: "recommendLoadResult_5", text: "Шаг 5", type: "primary" },
+        { id: "recommendInput", text: "К началу", type: "primary" },
+      ],
     };
 
     setTimeout(() => {
