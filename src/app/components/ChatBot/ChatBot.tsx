@@ -36,17 +36,19 @@ import MainAppNode from "../MainApp/MainAppNode";
 import { v4 as uuidv4 } from 'uuid';
 
 // DEMO JSONS
-import jsonPagerankInput from "./../../../viz/pagerank/input/nnp_3.json";
-import jsonPagerank1 from "./../../../viz/pagerank/test_3_step_1/pagerank_manual_result_nnp_3_1steps.json";
-import jsonPagerank2 from "./../../../viz/pagerank/test_3_step_2/pagerank_manual_result_nnp_3_1steps.json";
-import jsonPagerank3 from "./../../../viz/pagerank/test_3_step_2/pagerank_manual_result_nnp_3_1steps.json";
+import jsonPagerankInput from "./../../../viz0/pagerank/input.json";
+import jsonPagerank1 from "./../../../viz0/pagerank/pg_1_step.json";
+import jsonPagerank2 from "./../../../viz0/pagerank/pg_2_step.json";
+import jsonPagerank3 from "./../../../viz0/pagerank/pg_3_step.json";
+import jsonPagerank4 from "./../../../viz0/pagerank/pg_4_step.json";
+import jsonPagerank5 from "./../../../viz0/pagerank/pg_5_step.json";
 
-import jsonAltInput from "./../../../viz/alternatives/input/target_node_2_v2.json";
-import jsonAlt1 from "./../../../viz/alternatives/test_2_v2/Scenario 1.json";
-import jsonAlt2 from "./../../../viz/alternatives/test_2_v2/Scenario 2.json";
-import jsonAlt3 from "./../../../viz/alternatives/test_2_v2/Scenario 3.json";
-import jsonAlt4 from "./../../../viz/alternatives/test_2_v2/Scenario 4.json";
-import jsonAlt5 from "./../../../viz/alternatives/test_2_v2/Scenario 5.json";
+import jsonAltInput from "./../../../viz0/alternatives/input.json";
+import jsonAlt1 from "./../../../viz0/alternatives/Scenario 1.json";
+import jsonAlt2 from "./../../../viz0/alternatives/Scenario 2.json";
+// import jsonAlt3 from "./../../../viz0/alternatives/Scenario 3.json";
+// import jsonAlt4 from "./../../../viz0/alternatives/Scenario 4.json";
+// import jsonAlt5 from "./../../../viz0/alternatives/Scenario 5.json";
 
 
 export const ChatBot: React.FC = () => {
@@ -168,11 +170,19 @@ export const ChatBot: React.FC = () => {
         break;
 
       case "recommendLoadResult_2":
-        recommendLoadResult_2();
+        recommendLoadResult_var(jsonPagerank2);
         break;
 
       case "recommendLoadResult_3":
-        recommendLoadResult_3();
+        recommendLoadResult_var(jsonPagerank3);
+        break;
+
+      case "recommendLoadResult_3":
+        recommendLoadResult_var(jsonPagerank4);
+        break;
+
+      case "recommendLoadResult_3":
+        recommendLoadResult_var(jsonPagerank5);
         break;
 
       // case "view-projects":
@@ -425,15 +435,15 @@ export const ChatBot: React.FC = () => {
       case "Сценарий 2":
         setGraphDataAlt(jsonAlt2);
         break;
-      case "Сценарий 3":
-        setGraphDataAlt(jsonAlt3);
-        break;
-      case "Сценарий 4":
-        setGraphDataAlt(jsonAlt4);
-        break;
-      case "Сценарий 5":
-        setGraphDataAlt(jsonAlt5);
-        break;
+      // case "Сценарий 3":
+      //   setGraphDataAlt(jsonAlt3);
+      //   break;
+      // case "Сценарий 4":
+      //   setGraphDataAlt(jsonAlt4);
+      //   break;
+      // case "Сценарий 5":
+      //   setGraphDataAlt(jsonAlt5);
+      //   break;
 
       default:
         setGraphDataAlt(jsonAltInput);
@@ -622,13 +632,15 @@ export const ChatBot: React.FC = () => {
 
     const responseMessage: Message = {
       id: uuidv4() + 1,
-      text: "Получено 3 варианта. Какой вывести?",
+      text: "Получено несколько шагов построения графа. Какой вывести?",
       isBot: true,
       timestamp: new Date(),
       buttons: [
-        { id: "recommendLoadResult_1", text: "Вариант 1", type: "primary" },
-        { id: "recommendLoadResult_2", text: "Вариант 2", type: "primary" },
-        { id: "recommendLoadResult_3", text: "Вариант 3", type: "primary" },
+        { id: "recommendLoadResult_1", text: "Шаг 1", type: "primary" },
+        { id: "recommendLoadResult_2", text: "Шаг 2", type: "primary" },
+        { id: "recommendLoadResult_3", text: "Шаг 3", type: "primary" },
+        { id: "recommendLoadResult_4", text: "Шаг 4", type: "primary" },
+        { id: "recommendLoadResult_5", text: "Шаг 5", type: "primary" },
       ],
     };
 
@@ -646,9 +658,9 @@ export const ChatBot: React.FC = () => {
       isBot: true,
       timestamp: new Date(),
       buttons: [
-        { id: "recommendLoadResult_1", text: "Вариант 1", type: "primary" },
-        { id: "recommendLoadResult_2", text: "Вариант 2", type: "primary" },
-        { id: "recommendLoadResult_3", text: "Вариант 3", type: "primary" },
+        { id: "recommendLoadResult_1", text: "Шаг 1", type: "primary" },
+        { id: "recommendLoadResult_2", text: "Шаг 2", type: "primary" },
+        { id: "recommendLoadResult_3", text: "Шаг 3", type: "primary" },
         { id: "recommendInput", text: "К началу", type: "primary" },
       ],
     };
@@ -658,8 +670,8 @@ export const ChatBot: React.FC = () => {
     }, 500);
   };
 
-  const recommendLoadResult_2 = () => {
-    setGraphData(jsonPagerank2);
+  const recommendLoadResult_var = (json: any) => {
+    setGraphData(json);
 
     const responseMessage: Message = {
       id: uuidv4() + 1,
@@ -673,20 +685,7 @@ export const ChatBot: React.FC = () => {
     }, 500);
   };
 
-  const recommendLoadResult_3 = () => {
-    setGraphData(jsonPagerank3);
 
-    const responseMessage: Message = {
-      id: uuidv4() + 1,
-      text: "Рассчет выведен",
-      isBot: true,
-      timestamp: new Date(),
-    };
-
-    setTimeout(() => {
-      setMessages((prev) => [...prev, responseMessage]);
-    }, 500);
-  };
 
   const handleQuickAction = async (actionKey: QuickAction): Promise<void> => {
     const action = QUICK_ACTIONS.find((a) => a.key === actionKey);
@@ -1079,7 +1078,7 @@ export const ChatBot: React.FC = () => {
 
 const QUICK_ACTIONS = [
   // { key: "read" as const, label: "Прочти граф" },
-  { key: "alt" as const, label: "Альтернативы" },
+  { key: "alt" as const, label: "Альтернативные сценарии" },
   { key: "recommend" as const, label: "Рекомендация узла" },
 ];
 

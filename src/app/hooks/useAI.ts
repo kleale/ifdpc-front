@@ -60,7 +60,7 @@ export const useAI = (): UseAIReturn => {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
       setError(errorMessage);
       // Возвращаем fallback подсказку в случае ошибки
-      return 'Продолжайте исследовать возможности приложения. Я здесь, чтобы помочь!';
+      return '' //'Продолжайте исследовать возможности приложения. Я здесь, чтобы помочь!';
     } finally {
       setIsGenerating(false);
     }

@@ -1,0 +1,838 @@
+{
+    "content": [
+        {
+            "id": 1350723,
+            "name": "PageRank Result",
+            "nodes": [
+                {
+                    "id": 1008225,
+                    "uid": null,
+                    "code": "NODE_VALUE_1",
+                    "name": "Urals",
+                    "comment": null,
+                    "disable": null,
+                    "function": null,
+                    "graphId": 991202,
+                    "position": {
+                        "id": 1008458,
+                        "x": 0,
+                        "y": 100
+                    },
+                    "innerParams": [],
+                    "codeType": "NODE_VALUE",
+                    "parentNodeId": 1008915,
+                    "width": null,
+                    "height": null,
+                    "functionVariables": [],
+                    "nodeOptions": [
+                        {
+                            "id": 1008229,
+                            "inOut": "OUT",
+                            "code": "PRICE_OIL_URALS",
+                            "unitId": "56",
+                            "typeData": "7",
+                            "shortName": null,
+                            "multiIn": false,
+                            "multiOut": true,
+                            "min": null,
+                            "max": null,
+                            "number": null,
+                            "date": null,
+                            "inScale": null,
+                            "arrayValues": [
+                                {
+                                    "id": 1008238,
+                                    "position": 2047,
+                                    "value": 65,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008259,
+                                    "position": 2036,
+                                    "value": 65,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008244,
+                                    "position": 2055,
+                                    "value": 65,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008260,
+                                    "position": 2059,
+                                    "value": 65,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008252,
+                                    "position": 2060,
+                                    "value": 65,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008258,
+                                    "position": 2045,
+                                    "value": 65,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008241,
+                                    "position": 2050,
+                                    "value": 65,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008255,
+                                    "position": 2051,
+                                    "value": 65,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008249,
+                                    "position": 2043,
+                                    "value": 65,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008242,
+                                    "position": 2038,
+                                    "value": 65,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008232,
+                                    "position": 2044,
+                                    "value": 65,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008235,
+                                    "position": 2053,
+                                    "value": 65,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008245,
+                                    "position": 2030,
+                                    "value": 65,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008251,
+                                    "position": 2039,
+                                    "value": 65,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008240,
+                                    "position": 2035,
+                                    "value": 65,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008253,
+                                    "position": 2040,
+                                    "value": 65,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008248,
+                                    "position": 2048,
+                                    "value": 65,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008243,
+                                    "position": 2042,
+                                    "value": 65,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008250,
+                                    "position": 2052,
+                                    "value": 65,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008233,
+                                    "position": 2031,
+                                    "value": 65,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008231,
+                                    "position": 2032,
+                                    "value": 65,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008254,
+                                    "position": 2049,
+                                    "value": 65,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008256,
+                                    "position": 2054,
+                                    "value": 65,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008234,
+                                    "position": 2037,
+                                    "value": 65,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008247,
+                                    "position": 2033,
+                                    "value": 65,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008236,
+                                    "position": 2046,
+                                    "value": 65,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008237,
+                                    "position": 2058,
+                                    "value": 65,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008246,
+                                    "position": 2057,
+                                    "value": 65,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008257,
+                                    "position": 2034,
+                                    "value": 65,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008230,
+                                    "position": 2056,
+                                    "value": 65,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008239,
+                                    "position": 2041,
+                                    "value": 65,
+                                    "position1": null,
+                                    "position2": null
+                                }
+                            ],
+                            "symbol": null,
+                            "userField": "Цена нефти Urals",
+                            "chart": null,
+                            "gridView": null,
+                            "optCriteria": null,
+                            "uncertaintyId": null,
+                            "uncertainty": null,
+                            "variation": false,
+                            "variationMin": null,
+                            "variationMax": null,
+                            "arrayPositionName": "Индекс 1",
+                            "arrayPositionName1": "Индекс 2",
+                            "arrayPositionName2": "Индекс 3"
+                        }
+                    ],
+                    "functionInPython": false,
+                    "relateFem": false,
+                    "commentColor": null,
+                    "bsmall": null
+                },
+                {
+                    "id": 1008155,
+                    "uid": null,
+                    "code": "NODE_VALUE_1",
+                    "name": "Ставка НДПИ",
+                    "comment": null,
+                    "disable": null,
+                    "function": null,
+                    "graphId": 991202,
+                    "position": {
+                        "id": 1008460,
+                        "x": 0,
+                        "y": 200
+                    },
+                    "innerParams": [],
+                    "codeType": "NODE_VALUE",
+                    "parentNodeId": 1008915,
+                    "width": null,
+                    "height": null,
+                    "functionVariables": [],
+                    "nodeOptions": [
+                        {
+                            "id": 1008157,
+                            "inOut": "OUT",
+                            "code": "TAX_NDPI_OIL_RATE",
+                            "unitId": "56",
+                            "typeData": "3",
+                            "shortName": null,
+                            "multiIn": false,
+                            "multiOut": true,
+                            "min": null,
+                            "max": null,
+                            "number": 919.0,
+                            "date": null,
+                            "inScale": null,
+                            "arrayValues": [
+                                {
+                                    "id": 1008163,
+                                    "position": 2057,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008180,
+                                    "position": 2060,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008184,
+                                    "position": 2051,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008177,
+                                    "position": 2046,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008166,
+                                    "position": 2033,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008179,
+                                    "position": 2045,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008183,
+                                    "position": 2035,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008176,
+                                    "position": 2042,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008164,
+                                    "position": 2044,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008167,
+                                    "position": 2055,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008158,
+                                    "position": 2053,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008170,
+                                    "position": 2058,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008172,
+                                    "position": 2038,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008188,
+                                    "position": 2039,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008159,
+                                    "position": 2048,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008171,
+                                    "position": 2047,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008187,
+                                    "position": 2031,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008169,
+                                    "position": 2037,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008182,
+                                    "position": 2041,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008160,
+                                    "position": 2056,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008178,
+                                    "position": 2054,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008161,
+                                    "position": 2030,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008162,
+                                    "position": 2040,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008168,
+                                    "position": 2052,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008175,
+                                    "position": 2050,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008174,
+                                    "position": 2059,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008181,
+                                    "position": 2049,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008165,
+                                    "position": 2034,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008185,
+                                    "position": 2043,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008186,
+                                    "position": 2032,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 1008173,
+                                    "position": 2036,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                }
+                            ],
+                            "symbol": null,
+                            "userField": "Базовая ставка НДПИ на нефть",
+                            "chart": null,
+                            "gridView": null,
+                            "optCriteria": null,
+                            "uncertaintyId": null,
+                            "uncertainty": null,
+                            "variation": false,
+                            "variationMin": null,
+                            "variationMax": null,
+                            "arrayPositionName": "Индекс 1",
+                            "arrayPositionName1": "Индекс 2",
+                            "arrayPositionName2": "Индекс 3"
+                        }
+                    ],
+                    "functionInPython": false,
+                    "relateFem": false,
+                    "commentColor": null,
+                    "bsmall": null
+                },
+                {
+                    "id": 992591,
+                    "uid": null,
+                    "code": "NODE_VALUE_1",
+                    "name": "СКИН",
+                    "comment": null,
+                    "disable": null,
+                    "function": null,
+                    "graphId": 991202,
+                    "position": {
+                        "id": 992620,
+                        "x": 0,
+                        "y": 400
+                    },
+                    "innerParams": [],
+                    "codeType": "NODE_VALUE",
+                    "parentNodeId": 1003679,
+                    "width": null,
+                    "height": null,
+                    "functionVariables": [],
+                    "nodeOptions": [
+                        {
+                            "id": 992889,
+                            "inOut": "OUT",
+                            "code": "SKIN",
+                            "unitId": "56",
+                            "typeData": "3",
+                            "shortName": null,
+                            "multiIn": false,
+                            "multiOut": true,
+                            "min": null,
+                            "max": null,
+                            "number": 0.1,
+                            "date": null,
+                            "inScale": null,
+                            "arrayValues": [
+                                {
+                                    "id": 992892,
+                                    "position": 2034,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 992893,
+                                    "position": 2047,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 992895,
+                                    "position": 2043,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 992914,
+                                    "position": 2046,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 992894,
+                                    "position": 2033,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 992891,
+                                    "position": 2056,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 992904,
+                                    "position": 2045,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 992912,
+                                    "position": 2049,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 992890,
+                                    "position": 2044,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 992909,
+                                    "position": 2037,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 992911,
+                                    "position": 2059,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 992900,
+                                    "position": 2036,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 992906,
+                                    "position": 2048,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 992919,
+                                    "position": 2035,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 992905,
+                                    "position": 2039,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 992899,
+                                    "position": 2054,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 992913,
+                                    "position": 2060,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 992920,
+                                    "position": 2053,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 992896,
+                                    "position": 2058,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 992898,
+                                    "position": 2051,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 992897,
+                                    "position": 2038,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 992903,
+                                    "position": 2030,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 992901,
+                                    "position": 2031,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 992907,
+                                    "position": 2052,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 992915,
+                                    "position": 2055,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 992917,
+                                    "position": 2032,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 992910,
+                                    "position": 2057,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 992916,
+                                    "position": 2040,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 992918,
+                                    "position": 2050,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 992902,
+                                    "position": 2041,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                },
+                                {
+                                    "id": 992908,
+                                    "position": 2042,
+                                    "value": 0,
+                                    "position1": null,
+                                    "position2": null
+                                }
+                            ],
+                            "symbol": null,
+                            "userField": "Скин-фактор",
+                            "chart": null,
+                            "gridView": null,
+                            "optCriteria": null,
+                            "uncertaintyId": null,
+                            "uncertainty": null,
+                            "variation": false,
+                            "variationMin": null,
+                            "variationMax": null,
+                            "arrayPositionName": "Индекс 1",
+                            "arrayPositionName1": "Индекс 2",
+                            "arrayPositionName2": "Индекс 3"
+                        }
+                    ],
+                    "functionInPython": false,
+                    "relateFem": false,
+                    "commentColor": null,
+                    "bsmall": null
+                }
+            ],
+            "routes": [],
+            "create": "2025-10-24T08:47:57.1372",
+            "update": "2025-10-24T08:47:57.186826"
+        }
+    ],
+    "totalElements": 1,
+    "success": true,
+    "msg": ""
+}
